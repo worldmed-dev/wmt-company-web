@@ -57,7 +57,7 @@ const staticMenus = (t: ReturnType<typeof useTranslations>, locale: string, cate
   ] as Menu[];
 };
 
-function MegaMenu({ menu }: { menu: Menu }) {
+function MegaMenu({ menu, onClose }: { menu: Menu; onClose: () => void }) {
   const [activeItem, setActiveItem] = useState<MenuItem>(menu.items.find((i) => i.sub) ?? menu.items[0]);
 
   return (
@@ -68,7 +68,7 @@ function MegaMenu({ menu }: { menu: Menu }) {
       </div>
       <div className="flex-1 p-8 flex flex-col gap-y-1">
         {menu.items.map((item) => (
-          <Link key={item.title} href={(item.href ?? '#') as never} onMouseEnter={() => setActiveItem(item)}
+          <Link key={item.title} href={(item.href ?? '#') as never} onMouseEnter={() => setActiveItem(item)} onClick={onClose}
             className={`flex items-center justify-between py-2.5 px-4 rounded-xl transition-colors ${activeItem.title === item.title ? 'bg-white/10' : 'hover:bg-white/10'}`}>
             <span className={`text-[13px] font-medium tracking-[0.15em] uppercase transition-colors ${activeItem.title === item.title ? 'text-white' : 'text-white/70'}`}>
               {item.title}
@@ -80,7 +80,7 @@ function MegaMenu({ menu }: { menu: Menu }) {
       <div className="w-1/3 p-8 bg-white/5 border-l border-white/10 flex flex-col gap-y-1">
         {activeItem.sub ? (
           activeItem.sub.map((sub) => (
-            <Link key={sub.title} href={(sub.href ?? '#') as never} className="group/sub flex items-center justify-between py-2.5 px-4 rounded-xl hover:bg-white/10 transition-colors">
+            <Link key={sub.title} href={(sub.href ?? '#') as never} onClick={onClose} className="group/sub flex items-center justify-between py-2.5 px-4 rounded-xl hover:bg-white/10 transition-colors">
               <span className="text-white/70 text-[13px] font-medium tracking-[0.15em] uppercase group-hover/sub:text-white transition-colors">{sub.title}</span>
               <ChevronRightIcon className="w-4 h-4 text-white/30 group-hover/sub:text-white transition-colors" />
             </Link>
@@ -116,9 +116,9 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
           <div className="max-w-[1400px] mx-auto px-6 h-28 flex items-center justify-between py-4">
 
             {/* Logo */}
-            <div className="flex items-center cursor-pointer">
+            <Link href="/" className="flex items-center cursor-pointer">
               <img src="/wmt-logo.webp" alt="World Med Logo" className="h-20 w-auto brightness-0 invert" />
-            </div>
+            </Link>
 
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-8">
@@ -167,7 +167,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
 
         {/* Mega Menu Panels */}
         {menus.map((menu) => openMenu === menu.key && (
-          <MegaMenu key={menu.key} menu={menu} />
+          <MegaMenu key={menu.key} menu={menu} onClose={() => setOpenMenu(null)} />
         ))}
       </nav>
 

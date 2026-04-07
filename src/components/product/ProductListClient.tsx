@@ -5,7 +5,9 @@ import { useRouter } from '@/lib/navigation';
 import { useLocale } from 'next-intl';
 import type { CategoryWithSubs, SubCategory } from '@/lib/types';
 import { toSlug } from '@/lib/slug';
+import { FunnelIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import FilterCard from './FilterCard';
+import ProductCard from './ProductCard';
 
 type Props = {
   allCategories: CategoryWithSubs[];
@@ -19,6 +21,7 @@ export default function ProductListClient({ allCategories, currentCategory, init
   const isEn = locale === 'en';
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterOpen, setFilterOpen] = useState(false);
   const matchedSub = currentCategory?.sub_categories?.find((s) => toSlug(s.name_en) === initialSubSlug);
   const [selectedSubs, setSelectedSubs] = useState<number[]>(matchedSub ? [matchedSub.id] : []);
 
@@ -42,7 +45,7 @@ export default function ProductListClient({ allCategories, currentCategory, init
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Hero */}
-      <div className="relative w-full h-[80vh] overflow-hidden">
+      <div className="relative w-full aspect-[3/2] md:aspect-auto md:h-[80vh] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80"
           alt="Medical professionals"
@@ -54,14 +57,14 @@ export default function ProductListClient({ allCategories, currentCategory, init
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 lg:-mt-24">
 
         {/* Title */}
-        <div className="bg-white rounded-t-[32px] p-6 lg:p-10 mb-8 flex items-center min-h-[100px]">
+        <div className="bg-gray-50 rounded-t-[32px] p-6 lg:p-10 mb-8 flex items-center min-h-[100px]">
           <h1 className="text-2xl lg:text-3xl font-bold text-[#2C3E5D]">{categoryName}</h1>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* Sidebar */}
-          <aside className="w-full lg:w-72 flex-shrink-0">
+          {/* Sidebar — desktop only */}
+          <aside className="hidden lg:block w-72 flex-shrink-0">
             <FilterCard
               subCategories={subCategories}
               selectedSubs={selectedSubs}
@@ -74,31 +77,56 @@ export default function ProductListClient({ allCategories, currentCategory, init
           {/* Main */}
           <main className="flex-1">
             {/* Search */}
-            <div className="relative mb-8">
-              <input
-                type="text"
-                placeholder={isEn ? 'Search' : 'ค้นหา'}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-6 pr-32 py-4 rounded-full border border-gray-300 focus:outline-none focus:border-[#15233E] focus:ring-1 focus:ring-[#15233E] text-gray-700 bg-white shadow-sm"
-              />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                <button className="px-6 py-2.5 bg-[#15233E] hover:bg-[#1f335c] text-white text-sm font-medium rounded-full transition-colors">
-                  {isEn ? 'Search' : 'ค้นหา'}
-                </button>
+            <div className="relative mb-4 flex gap-2">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder={isEn ? 'Search' : 'ค้นหา'}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-6 pr-32 py-4 rounded-full border border-gray-300 focus:outline-none focus:border-[#15233E] focus:ring-1 focus:ring-[#15233E] text-gray-700 bg-white shadow-sm"
+                />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                  <button className="flex items-center gap-2 px-4 py-2.5 bg-[#15233E] hover:bg-[#1f335c] text-white text-sm font-medium rounded-full transition-colors">
+                    <MagnifyingGlassIcon className="w-4 h-4" />
+                    <span className="hidden sm:inline">{isEn ? 'Search' : 'ค้นหา'}</span>
+                  </button>
+                </div>
               </div>
+              {/* Mobile filter button */}
+              <button
+                onClick={() => setFilterOpen(!filterOpen)}
+                className={`lg:hidden flex items-center justify-center min-w-[3.5rem] aspect-square rounded-full border transition-colors shrink-0 ${
+                  filterOpen ? 'bg-[#15233E] border-[#15233E] text-white' : 'bg-white border-gray-300 text-[#15233E]'
+                }`}
+              >
+                <FunnelIcon className="w-5 h-5" />
+              </button>
             </div>
 
-            {/* Product Grid — placeholder */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+            {/* Mobile FilterCard */}
+            {filterOpen && (
+              <div className="lg:hidden mb-6">
+                <FilterCard
+                  subCategories={subCategories}
+                  selectedSubs={selectedSubs}
+                  onToggle={toggleSub}
+                  onClear={() => setSelectedSubs([])}
+                  isEn={isEn}
+                  showSearch
+                  onSearch={() => setFilterOpen(false)}
+                />
+              </div>
+            )}
+
+            {/* Product Grid */}
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10">
               {Array(6).fill(null).map((_, i) => (
-                <div key={i} className="group cursor-pointer">
-                  <div className="w-full aspect-square bg-[#F5F7FA] rounded-3xl mb-4" />
-                  <div className="px-1">
-                    <h4 className="text-lg font-bold text-[#15233E] mb-1">Product Name</h4>
-                    <p className="text-sm text-gray-400 font-medium">{categoryName}</p>
-                  </div>
-                </div>
+                <ProductCard
+                  key={i}
+                  name="Product Name"
+                  category={categoryName}
+                />
               ))}
             </div>
           </main>

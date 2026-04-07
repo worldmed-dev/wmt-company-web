@@ -10,9 +10,11 @@ type Props = {
   onToggle: (id: number) => void;
   onClear: () => void;
   isEn: boolean;
+  showSearch?: boolean;
+  onSearch?: () => void;
 };
 
-export default function FilterCard({ subCategories, selectedSubs, onToggle, onClear, isEn }: Props) {
+export default function FilterCard({ subCategories, selectedSubs, onToggle, onClear, isEn, showSearch, onSearch }: Props) {
   const [open, setOpen] = useState(true);
 
   return (
@@ -94,12 +96,22 @@ export default function FilterCard({ subCategories, selectedSubs, onToggle, onCl
 
       <div className="px-6 pb-6">
         <hr className="border-gray-100 mb-4" />
-        <button
-          onClick={onClear}
-          className="w-full py-3 px-4 bg-[#15233E] hover:bg-[#1f335c] text-white text-sm font-semibold rounded-xl transition-colors"
-        >
-          {isEn ? 'Clear All' : 'ล้างทั้งหมด'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={onClear}
+            className="flex-1 py-3 px-4 bg-[#15233E] hover:bg-[#1f335c] text-white text-sm font-semibold rounded-xl transition-colors"
+          >
+            {isEn ? 'Clear All' : 'ล้างทั้งหมด'}
+          </button>
+          {showSearch && (
+            <button
+              onClick={onSearch}
+              className="flex-1 py-3 px-4 bg-white border-2 border-[#15233E] text-[#15233E] text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+            >
+              {isEn ? 'Search' : 'ค้นหา'}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

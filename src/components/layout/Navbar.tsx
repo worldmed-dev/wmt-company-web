@@ -27,7 +27,7 @@ const staticMenus = (t: ReturnType<typeof useTranslations>, locale: string, cate
         href: `/products/${toSlug(cat.name_en)}`,
         sub: cat.sub_categories?.map((sub) => ({
           title: isEn ? sub.name_en : sub.name_th,
-          href: `/products/${toSlug(cat.name_en)}?sub=${sub.id}`,
+          href: `/products/${toSlug(cat.name_en)}?sub=${toSlug(sub.name_en)}`,
         })),
       })),
     },

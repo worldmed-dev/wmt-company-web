@@ -4,13 +4,12 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import Navbar from '@/components/layout/Navbar';
 import { getProductCategories } from '@/lib/categories';
-import '../globals.css';
 
 const montserrat = Montserrat({ variable: '--font-montserrat', subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'World Med Trading',
-  description: 'Pioneering Thailand\'s Medical Devices',
+  description: "Pioneering Thailand's Medical Devices",
 };
 
 export default async function LocaleLayout({
@@ -27,13 +26,9 @@ export default async function LocaleLayout({
   ]);
 
   return (
-    <html lang={locale} className={`${montserrat.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">
-        <NextIntlClientProvider messages={messages}>
-          <Navbar categories={categories} />
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <Navbar categories={categories} />
+      {children}
+    </NextIntlClientProvider>
   );
 }

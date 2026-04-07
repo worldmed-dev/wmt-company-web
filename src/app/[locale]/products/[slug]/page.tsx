@@ -12,16 +12,10 @@ export default async function ProductSlugPage({
   const { slug } = await params;
   const { sub } = await searchParams;
 
-  console.log('=== ProductSlugPage ===')
-  console.log('slug:', slug)
-
   const [currentCategory, allCategories] = await Promise.all([
     getCategoryBySlug(slug),
     getProductCategories(),
   ]);
-
-  console.log('currentCategory:', currentCategory?.name_en ?? 'NULL')
-  console.log('allCategories count:', allCategories.length)
 
   if (!currentCategory) notFound();
 
@@ -29,7 +23,7 @@ export default async function ProductSlugPage({
     <ProductListClient
       allCategories={allCategories}
       currentCategory={currentCategory}
-      initialSubId={sub ? parseInt(sub) : null}
+      initialSubSlug={sub ?? null}
     />
   );
 }

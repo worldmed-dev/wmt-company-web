@@ -5,20 +5,22 @@ import { useRouter } from '@/lib/navigation';
 import { useLocale } from 'next-intl';
 import type { CategoryWithSubs, SubCategory } from '@/lib/types';
 import { toSlug } from '@/lib/slug';
+import FilterCard from './FilterCard';
 
 type Props = {
   allCategories: CategoryWithSubs[];
   currentCategory: CategoryWithSubs | null;
-  initialSubId?: number | null;
+  initialSubSlug?: string | null;
 };
 
-export default function ProductListClient({ allCategories, currentCategory, initialSubId }: Props) {
+export default function ProductListClient({ allCategories, currentCategory, initialSubSlug }: Props) {
   const locale = useLocale();
   const router = useRouter();
   const isEn = locale === 'en';
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSubs, setSelectedSubs] = useState<number[]>(initialSubId ? [initialSubId] : []);
+  const matchedSub = currentCategory?.sub_categories?.find((s) => toSlug(s.name_en) === initialSubSlug);
+  const [selectedSubs, setSelectedSubs] = useState<number[]>(matchedSub ? [matchedSub.id] : []);
 
   const categoryName = currentCategory
     ? (isEn ? currentCategory.name_en : currentCategory.name_th)
@@ -40,14 +42,19 @@ export default function ProductListClient({ allCategories, currentCategory, init
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Hero */}
-      <div className="relative w-full h-[350px] lg:h-[450px] bg-[#1a2340]">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#15233E] via-transparent to-transparent" />
+      <div className="relative w-full h-[80vh] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80"
+          alt="Medical professionals"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#15233E] via-[#15233E]/40 to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 lg:-mt-24">
 
         {/* Title */}
-        <div className="bg-white rounded-t-[32px] shadow-sm p-6 lg:p-10 mb-8 flex items-center min-h-[100px]">
+        <div className="bg-white rounded-t-[32px] p-6 lg:p-10 mb-8 flex items-center min-h-[100px]">
           <h1 className="text-2xl lg:text-3xl font-bold text-[#2C3E5D]">{categoryName}</h1>
         </div>
 
@@ -55,63 +62,13 @@ export default function ProductListClient({ allCategories, currentCategory, init
 
           {/* Sidebar */}
           <aside className="w-full lg:w-72 flex-shrink-0">
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-
-              {/* By Category */}
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-sm font-bold text-[#2C3E5D]">
-                    {isEn ? 'By Category' : 'หมวดหมู่'} ({subCategories.length})
-                  </h3>
-                </div>
-                <div className="space-y-3">
-                  {subCategories.map((sub) => (
-                    <label key={sub.id} className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedSubs.includes(sub.id)}
-                        onChange={() => toggleSub(sub.id)}
-                        className="w-4 h-4 rounded border-gray-300 text-[#15233E] focus:ring-[#15233E]"
-                      />
-                      <span className="text-sm text-gray-600">
-                        {isEn ? sub.name_en : sub.name_th}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <hr className="border-gray-100 my-6" />
-
-              {/* All Categories */}
-              <div className="mb-8">
-                <h3 className="text-sm font-bold text-[#2C3E5D] mb-4">
-                  {isEn ? 'All Categories' : 'ทุกหมวดหมู่'}
-                </h3>
-                <div className="space-y-2">
-                  {allCategories.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => handleCategoryChange(cat.name_en)}
-                      className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${
-                        currentCategory?.id === cat.id
-                          ? 'bg-[#15233E] text-white font-semibold'
-                          : 'text-gray-600 hover:bg-gray-50'
-                      }`}
-                    >
-                      {isEn ? cat.name_en : cat.name_th}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                onClick={() => setSelectedSubs([])}
-                className="w-full py-3 px-4 bg-[#15233E] hover:bg-[#1f335c] text-white text-sm font-semibold rounded-xl transition-colors"
-              >
-                {isEn ? 'Clear All' : 'ล้างทั้งหมด'}
-              </button>
-            </div>
+            <FilterCard
+              subCategories={subCategories}
+              selectedSubs={selectedSubs}
+              onToggle={toggleSub}
+              onClear={() => setSelectedSubs([])}
+              isEn={isEn}
+            />
           </aside>
 
           {/* Main */}

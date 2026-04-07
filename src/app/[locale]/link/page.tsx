@@ -4,7 +4,7 @@ const links = [
   {
     label: 'Our Products',
     desc: 'Explore our full range of medical devices',
-    href: '/products',
+    href: '/products/',
     icon: GlobeAltIcon,
   },
   {

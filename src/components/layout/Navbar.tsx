@@ -61,7 +61,10 @@ function MegaMenu({ menu, onClose }: { menu: Menu; onClose: () => void }) {
   const [activeItem, setActiveItem] = useState<MenuItem>(menu.items.find((i) => i.sub) ?? menu.items[0]);
 
   return (
-    <div className="w-full backdrop-blur-2xl bg-white/10 shadow-2xl border-y border-white/20 flex">
+    <div
+      className="w-full backdrop-blur-2xl bg-white/10 shadow-2xl border-y border-white/20 flex"
+      style={{ animation: 'megaMenuIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
+    >
       <div className="w-1/5 p-10 border-r border-white/10 flex flex-col justify-center shrink-0">
         <h2 className="text-white text-4xl font-black italic tracking-tighter mb-2">{menu.left.title}</h2>
         <p className="text-white/50 text-xs font-medium leading-relaxed tracking-[0.15em] whitespace-pre-line">{menu.left.desc}</p>
@@ -173,7 +176,10 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 pt-28 backdrop-blur-2xl bg-black/70 lg:hidden overflow-y-auto">
+        <div
+          className="fixed inset-0 z-40 pt-28 backdrop-blur-2xl bg-black/70 lg:hidden overflow-y-auto"
+          style={{ animation: 'megaMenuIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
+        >
           <div className="flex flex-col px-6 py-6 gap-1">
             {menus.map(({ key, label, items }) => (
               <div key={key} className="border-b border-white/10">

@@ -22,7 +22,7 @@ export default async function Home() {
               Empowering healthcare with Medical Technology<br />
               from 30+ leading global medical brands.
             </p>
-            <button className="mt-8 px-8 py-3 bg-white text-[#122246] text-sm font-bold uppercase tracking-widest rounded-full hover:bg-white/90 transition-colors">
+            <button className="mt-8 px-8 py-3 border border-white/20 bg-white/10 backdrop-blur-md text-white text-sm font-bold uppercase tracking-widest rounded-full hover:bg-white/20 transition-colors">
               Get Demo
             </button>
           </div>
@@ -34,6 +34,13 @@ export default async function Home() {
             <h2 className="text-sm font-bold uppercase tracking-widest text-white">Our Global Partner</h2>
           </div>
           <ClientCarousel />
+        </section>
+
+        {/* Our Key Business */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-6 md:px-12">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-[#122246] mb-12 text-center">Our Key Business</h2>
+          </div>
         </section>
       </main>
     </>

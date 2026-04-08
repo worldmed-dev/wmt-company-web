@@ -1,35 +1,16 @@
-'use client';
+import { supabase } from '@/lib/supabase';
+import CarouselClient from './CarouselClient';
 
-const clients = Array.from({ length: 18 }, (_, i) => `Client ${i + 1}`);
-const row1 = clients.slice(0, 9);
-const row2 = clients.slice(9, 18);
+export default async function ClientCarousel() {
+  const { data, error } = await supabase
+    .from('brands')
+    .select('id, logo_url')
+    .order('id', { ascending: true });
 
-function CarouselRow({ items, reverse }: { items: string[]; reverse?: boolean }) {
-  const doubled = [...items, ...items];
+  if (error || !data) return null;
 
-  return (
-    <div className="overflow-hidden w-full">
-      <div
-        className="flex gap-12 w-max"
-        style={{
-          animation: `${reverse ? 'scrollRight' : 'scrollLeft'} 20s linear infinite`,
-        }}
-      >
-        {doubled.map((name, i) => (
-          <span key={i} className="text-white/40 text-xs font-semibold tracking-widest uppercase whitespace-nowrap">
-            {name}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
+  const row1 = data.filter((b) => b.id >= 1 && b.id <= 13);
+  const row2 = data.filter((b) => b.id >= 14 && b.id <= 27);
 
-export default function ClientCarousel() {
-  return (
-    <div className="flex flex-col gap-6 mt-8 max-w-7xl mx-auto px-6 md:px-12">
-      <CarouselRow items={row1} />
-      <CarouselRow items={row2} reverse />
-    </div>
-  );
+  return <CarouselClient row1={row1} row2={row2} />;
 }

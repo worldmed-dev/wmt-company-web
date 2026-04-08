@@ -156,7 +156,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                   </button>
                 </div>
               </div>
-              <a href="#" className="border-2 border-white text-white px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-white hover:text-slate-900 transition-all tracking-wider">
+              <a href="#" className="border border-white/20 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-white/20 transition-all tracking-wider">
                 {t('nav.contact')}
               </a>
             </div>
@@ -206,7 +206,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
             <div className="mt-6 flex items-center gap-4">
               <button onClick={() => switchLocale('en')} className={`text-sm font-bold ${locale === 'en' ? 'text-white' : 'text-white/50'}`}>EN</button>
               <button onClick={() => switchLocale('th')} className={`text-sm font-bold ${locale === 'th' ? 'text-white' : 'text-white/50'}`}>TH</button>
-              <a href="#" className="border-2 border-white text-white px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-white hover:text-slate-900 transition-all tracking-wider">
+              <a href="#" className="border border-white/20 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-white/20 transition-all tracking-wider">
                 {t('nav.contact')}
               </a>
             </div>

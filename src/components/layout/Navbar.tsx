@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, usePathname, Link } from '@/lib/navigation';
 import { ChevronDownIcon, MagnifyingGlassIcon, Bars3Icon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -62,34 +62,34 @@ function MegaMenu({ menu, onClose }: { menu: Menu; onClose: () => void }) {
 
   return (
     <div
-      className="w-full backdrop-blur-2xl bg-white/10 shadow-2xl border-y border-white/20 flex"
+      className="w-full backdrop-blur-3xl bg-white/40 shadow-2xl border-y border-black/10 flex"
       style={{ animation: 'megaMenuIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
     >
-      <div className="w-1/5 p-10 border-r border-white/10 flex flex-col justify-center shrink-0">
-        <h2 className="text-white text-4xl font-black italic tracking-tighter mb-2">{menu.left.title}</h2>
-        <p className="text-white/50 text-xs font-medium leading-relaxed tracking-[0.15em] whitespace-pre-line">{menu.left.desc}</p>
+      <div className="w-1/5 p-10 border-r border-black/10 flex flex-col justify-center shrink-0">
+        <h2 className="text-[#112246] text-4xl font-black italic tracking-tighter mb-2">{menu.left.title}</h2>
+        <p className="text-[#112246]/50 text-xs font-medium leading-relaxed tracking-[0.15em] whitespace-pre-line">{menu.left.desc}</p>
       </div>
       <div className="flex-1 p-8 flex flex-col gap-y-1">
         {menu.items.map((item) => (
           <Link key={item.title} href={(item.href ?? '#') as never} onMouseEnter={() => setActiveItem(item)} onClick={onClose}
-            className={`flex items-center justify-between py-2.5 px-4 rounded-xl transition-colors ${activeItem.title === item.title ? 'bg-white/10' : 'hover:bg-white/10'}`}>
-            <span className={`text-[13px] font-medium tracking-[0.15em] uppercase transition-colors ${activeItem.title === item.title ? 'text-white' : 'text-white/70'}`}>
+            className={`flex items-center justify-between py-2.5 px-4 rounded-xl transition-colors ${activeItem.title === item.title ? 'bg-[#112246]/10' : 'hover:bg-[#112246]/10'}`}>
+            <span className={`text-[13px] font-medium tracking-[0.15em] uppercase transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
               {item.title}
             </span>
-            {item.sub && <ChevronRightIcon className={`w-4 h-4 transition-colors ${activeItem.title === item.title ? 'text-white' : 'text-white/30'}`} />}
+            {item.sub && <ChevronRightIcon className={`w-4 h-4 transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/30'}`} />}
           </Link>
         ))}
       </div>
-      <div className="w-1/3 p-8 bg-white/5 border-l border-white/10 flex flex-col gap-y-1">
+      <div className="w-1/3 p-8 bg-black/5 border-l border-black/10 flex flex-col gap-y-1">
         {activeItem.sub ? (
           activeItem.sub.map((sub) => (
-            <Link key={sub.title} href={(sub.href ?? '#') as never} onClick={onClose} className="group/sub flex items-center justify-between py-2.5 px-4 rounded-xl hover:bg-white/10 transition-colors">
-              <span className="text-white/70 text-[13px] font-medium tracking-[0.15em] uppercase group-hover/sub:text-white transition-colors">{sub.title}</span>
-              <ChevronRightIcon className="w-4 h-4 text-white/30 group-hover/sub:text-white transition-colors" />
+            <Link key={sub.title} href={(sub.href ?? '#') as never} onClick={onClose} className="group/sub flex items-center justify-between py-2.5 px-4 rounded-xl hover:bg-[#112246]/10 transition-colors">
+              <span className="text-[#112246]/60 text-[13px] font-medium tracking-[0.15em] uppercase group-hover/sub:text-[#112246] transition-colors">{sub.title}</span>
+              <ChevronRightIcon className="w-4 h-4 text-[#112246]/30 group-hover/sub:text-[#112246] transition-colors" />
             </Link>
           ))
         ) : (
-          <p className="text-white/20 text-xs tracking-[0.15em] px-4 pt-2">—</p>
+          <p className="text-[#112246]/20 text-xs tracking-[0.15em] px-4 pt-2">—</p>
         )}
       </div>
     </div>
@@ -105,6 +105,13 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const menus = staticMenus(t, locale, categories);
 
@@ -114,49 +121,53 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50" onMouseLeave={() => setOpenMenu(null)}>
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={{ backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.8)' : 'transparent', backdropFilter: scrolled ? 'blur(24px)' : 'none' }}
+        onMouseLeave={() => setOpenMenu(null)}
+      >
         <div className="border-b border-white/10">
           <div className="max-w-[1400px] mx-auto px-6 h-28 flex items-center justify-between py-4">
 
             {/* Logo */}
             <Link href="/" className="flex items-center cursor-pointer">
-              <img src="/wmt-logo.webp" alt="World Med Logo" className="h-20 w-auto brightness-0 invert" />
+              <img src="/wmt-logo.webp" alt="World Med Logo" className="h-20 w-auto" />
             </Link>
 
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-8">
               {menus.map((menu) => (
                 <button key={menu.key} onMouseEnter={() => setOpenMenu(menu.key)}
-                  className="relative flex items-center text-sm font-semibold text-white tracking-[0.15em] uppercase">
+                  className="relative flex items-center text-sm font-bold text-[#112246] tracking-[0.15em] uppercase">
                   {menu.label}
                   <ChevronDownIcon className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-4 h-4 transition-all duration-200 ${openMenu === menu.key ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`} />
                 </button>
               ))}
-              <a href="#" className="text-sm font-semibold text-white/70 hover:text-white uppercase tracking-[0.15em] transition-colors">
+              <a href="#" className="text-sm font-bold text-[#112246]/70 hover:text-[#112246] uppercase tracking-[0.15em] transition-colors">
                 {t('nav.career')}
               </a>
             </div>
 
             {/* Right */}
             <div className="hidden lg:flex items-center gap-6">
-              <button className="text-white/70 hover:text-white">
+              <button className="text-[#112246]/70 hover:text-[#112246]">
                 <MagnifyingGlassIcon className="w-5 h-5 stroke-2" />
               </button>
               <div className="relative group" onMouseEnter={() => setOpenMenu(null)}>
-                <button className="flex items-center gap-1 text-sm font-bold text-white">
+                <button className="flex items-center gap-1 text-sm font-bold text-[#112246]">
                   {locale === 'en' ? 'EN' : 'TH'}
                   <ChevronDownIcon className="w-3.5 h-3.5 transition-transform group-hover:rotate-180" />
                 </button>
-                <div className="absolute top-full right-0 mt-2 w-36 backdrop-blur-md bg-white/10 border border-white/20 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <button onClick={() => switchLocale('en')} className={`w-full px-4 py-2.5 text-left text-sm font-bold tracking-wide transition-colors hover:bg-white/10 ${locale === 'en' ? 'text-white' : 'text-white/60'}`}>
+                <div className="absolute top-full right-0 mt-2 w-36 backdrop-blur-md bg-white/80 border border-[#112246]/20 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <button onClick={() => switchLocale('en')} className={`w-full px-4 py-2.5 text-left text-sm font-bold tracking-wide transition-colors hover:bg-[#112246]/10 ${locale === 'en' ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
                     {t('nav.lang_en')}
                   </button>
-                  <button onClick={() => switchLocale('th')} className={`w-full px-4 py-2.5 text-left text-sm font-bold tracking-wide transition-colors hover:bg-white/10 ${locale === 'th' ? 'text-white' : 'text-white/60'}`}>
+                  <button onClick={() => switchLocale('th')} className={`w-full px-4 py-2.5 text-left text-sm font-bold tracking-wide transition-colors hover:bg-[#112246]/10 ${locale === 'th' ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
                     {t('nav.lang_th')}
                   </button>
                 </div>
               </div>
-              <a href="#" className="border border-white/20 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-white/20 transition-all tracking-wider">
+              <a href="#" className="border border-[#112246]/20 bg-[#112246]/10 backdrop-blur-md text-[#112246] px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-[#112246]/20 transition-all tracking-wider">
                 {t('nav.contact')}
               </a>
             </div>

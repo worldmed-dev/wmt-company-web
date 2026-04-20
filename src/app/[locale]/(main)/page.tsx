@@ -7,16 +7,16 @@ export default async function Home() {
         {/* Hero */}
         <div className="relative w-full h-screen overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80"
+            src="https://ylxyojvodlhajgvuorll.supabase.co/storage/v1/object/public/Image/cover_image/test-cover.webp"
             alt="Medical professionals"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#122246] via-[#122246]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#122246] via-[#122246]/20 to-transparent" />
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-7xl px-6 md:px-12">
-            <h1 className="text-3xl md:text-5xl tracking-tight text-white uppercase leading-tight">
-              <span className="font-normal">Better Care</span><br />
-              <span className="font-bold">Trust Always</span>
+            <h1 className="text-3xl md:text-5xl tracking-tight text-white uppercase leading-tight font-normal">
+              Better Care<br />
+              Trust Always
             </h1>
             <p className="mt-4 text-white/80 text-[20px] font-normal max-w-xl">
               Empowering healthcare with Medical Technology<br />

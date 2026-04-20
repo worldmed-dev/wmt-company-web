@@ -1,10 +1,10 @@
 type Props = {
   name: string;
-  category: string;
+  subCategory: string;
   imageUrl?: string;
 };
 
-export default function ProductCard({ name, category, imageUrl }: Props) {
+export default function ProductCard({ name, subCategory, imageUrl }: Props) {
   return (
     <div className="group cursor-pointer">
       <div className="w-full aspect-square bg-[#F5F7FA] rounded-3xl mb-4 overflow-hidden">
@@ -18,7 +18,7 @@ export default function ProductCard({ name, category, imageUrl }: Props) {
       </div>
       <div className="px-1">
         <h4 className="text-base font-bold text-[#15233E] mb-1">{name}</h4>
-        <p className="text-sm text-gray-400 font-medium">{category}</p>
+        <p className="text-sm text-gray-400 font-medium">{subCategory}</p>
       </div>
     </div>
   );

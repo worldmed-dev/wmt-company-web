@@ -121,13 +121,16 @@ export default function ProductListClient({ allCategories, currentCategory, init
 
             {/* Product Grid */}
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-10">
-              {Array(6).fill(null).map((_, i) => (
-                <ProductCard
-                  key={i}
-                  name="Product Name"
-                  category={categoryName}
-                />
-              ))}
+              {subCategories.map((sub) => {
+                const subName = isEn ? sub.name_en : sub.name_th;
+                return (
+                  <ProductCard
+                    key={sub.id}
+                    name="Product Name"
+                    subCategory={subName}
+                  />
+                );
+              })}
             </div>
           </main>
         </div>

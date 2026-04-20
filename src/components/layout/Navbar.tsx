@@ -67,13 +67,13 @@ function MegaMenu({ menu, onClose }: { menu: Menu; onClose: () => void }) {
     >
       <div className="w-1/5 p-10 border-r border-black/10 flex flex-col justify-center shrink-0">
         <h2 className="text-[#112246] text-4xl font-black italic tracking-tighter mb-2">{menu.left.title}</h2>
-        <p className="text-[#112246]/50 text-xs font-medium leading-relaxed tracking-[0.15em] whitespace-pre-line">{menu.left.desc}</p>
+        <p className="text-[#112246]/50 text-xs font-semibold leading-relaxed tracking-[0.15em] whitespace-pre-line">{menu.left.desc}</p>
       </div>
       <div className="flex-1 p-8 flex flex-col gap-y-1">
         {menu.items.map((item) => (
           <Link key={item.title} href={(item.href ?? '#') as never} onMouseEnter={() => setActiveItem(item)} onClick={onClose}
             className={`flex items-center justify-between py-2.5 px-4 rounded-xl transition-colors ${activeItem.title === item.title ? 'bg-[#112246]/10' : 'hover:bg-[#112246]/10'}`}>
-            <span className={`text-[13px] font-medium tracking-[0.15em] uppercase transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
+            <span className={`text-[13px] font-semibold tracking-[0.15em] uppercase transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
               {item.title}
             </span>
             {item.sub && <ChevronRightIcon className={`w-4 h-4 transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/30'}`} />}
@@ -84,7 +84,7 @@ function MegaMenu({ menu, onClose }: { menu: Menu; onClose: () => void }) {
         {activeItem.sub ? (
           activeItem.sub.map((sub) => (
             <Link key={sub.title} href={(sub.href ?? '#') as never} onClick={onClose} className="group/sub flex items-center justify-between py-2.5 px-4 rounded-xl hover:bg-[#112246]/10 transition-colors">
-              <span className="text-[#112246]/60 text-[13px] font-medium tracking-[0.15em] uppercase group-hover/sub:text-[#112246] transition-colors">{sub.title}</span>
+              <span className="text-[#112246]/60 text-[13px] font-semibold tracking-[0.15em] uppercase group-hover/sub:text-[#112246] transition-colors">{sub.title}</span>
               <ChevronRightIcon className="w-4 h-4 text-[#112246]/30 group-hover/sub:text-[#112246] transition-colors" />
             </Link>
           ))
@@ -143,9 +143,13 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                   <ChevronDownIcon className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-4 h-4 transition-all duration-200 ${openMenu === menu.key ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`} />
                 </button>
               ))}
-              <a href="#" className="text-sm font-bold text-[#112246]/70 hover:text-[#112246] uppercase tracking-[0.15em] transition-colors">
+              <Link
+                href="/career"
+                onClick={() => setOpenMenu(null)}
+                className="text-sm font-bold text-[#112246]/70 hover:text-[#112246] uppercase tracking-[0.15em] transition-colors"
+              >
                 {t('nav.career')}
-              </a>
+              </Link>
             </div>
 
             {/* Right */}
@@ -213,7 +217,17 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                 )}
               </div>
             ))}
-            <a href="#" className="py-3 text-sm font-bold text-white/70 tracking-[0.15em] uppercase border-b border-white/10">{t('nav.career')}</a>
+            <Link
+              href="/career"
+              onClick={() => {
+                setMobileOpen(false);
+                setMobileExpanded(null);
+                setOpenMenu(null);
+              }}
+              className="py-3 text-sm font-bold text-white/70 tracking-[0.15em] uppercase border-b border-white/10"
+            >
+              {t('nav.career')}
+            </Link>
             <div className="mt-6 flex items-center gap-4">
               <button onClick={() => switchLocale('en')} className={`text-sm font-bold ${locale === 'en' ? 'text-white' : 'text-white/50'}`}>EN</button>
               <button onClick={() => switchLocale('th')} className={`text-sm font-bold ${locale === 'th' ? 'text-white' : 'text-white/50'}`}>TH</button>

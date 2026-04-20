@@ -1,9 +1,6 @@
-'use client';
+import { getEmployerBrandingCards, type EmployerBrandingCard } from '@/lib/employerBranding';
 
-const row1 = Array.from({ length: 10 }, (_, i) => i + 1);
-const row2 = Array.from({ length: 10 }, (_, i) => i + 11);
-
-function CarouselRow({ items, reverse }: { items: number[]; reverse?: boolean }) {
+function CarouselRow({ items, reverse }: { items: EmployerBrandingCard[]; reverse?: boolean }) {
   const doubled = [...items, ...items];
 
   return (
@@ -16,13 +13,32 @@ function CarouselRow({ items, reverse }: { items: number[]; reverse?: boolean })
         className="flex gap-8 w-max"
         style={{ animation: `${reverse ? 'scrollRight' : 'scrollLeft'} 40s linear infinite` }}
       >
-        {doubled.map((n, i) => (
+        {doubled.map((card, i) => (
           <div
-            key={i}
-            className="shrink-0 bg-gray-100 rounded-2xl overflow-hidden flex items-center justify-center text-gray-300 text-sm font-bold"
-            style={{ width: '18vw', aspectRatio: '3/4' }}
+            key={`${card.id}-${i}`}
+            className="group relative shrink-0 bg-gray-100 rounded-2xl overflow-hidden flex items-center justify-center text-gray-300 text-sm font-bold border border-black/5"
+            style={{ width: '16vw', aspectRatio: '3/4' }}
           >
-            {n}
+            {card.imageUrl ? (
+              <img
+                src={card.imageUrl}
+                alt={card.alt}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+            ) : (
+              <span className="text-[#112246]/30 transition-opacity duration-300 group-hover:opacity-0">{card.id}</span>
+            )}
+            <div className="absolute inset-0 bg-[#112246]/92 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute inset-0 flex items-center justify-center px-5 py-8 text-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <p className="max-w-[85%] text-sm leading-relaxed text-white">
+                {card.quote}
+              </p>
+            </div>
+            <div className="absolute inset-x-0 bottom-0 p-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <p className="text-left text-sm font-semibold text-white">{card.name}</p>
+              <p className="mt-1 text-left text-[11px] font-medium uppercase tracking-[0.14em] text-white/70">{card.role}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -30,7 +46,11 @@ function CarouselRow({ items, reverse }: { items: number[]; reverse?: boolean })
   );
 }
 
-export default function CareerCarousel() {
+export default async function CareerCarousel() {
+  const cards = await getEmployerBrandingCards();
+  const row1 = cards.slice(0, 10);
+  const row2 = cards.slice(10, 20);
+
   return (
     <section className="py-16 bg-white">
       <div className="flex flex-col gap-8">

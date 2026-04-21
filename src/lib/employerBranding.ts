@@ -16,6 +16,7 @@ export type EmployerBrandingCard = {
   name: string;
   role: string;
   quote: string;
+  color: string;
 };
 
 function firstString(row: EmployerBrandingRow, keys: string[]) {
@@ -37,6 +38,7 @@ function fallbackCards(): EmployerBrandingCard[] {
     name: `Team Member ${id}`,
     role: 'World Med Trading',
     quote: PLACEHOLDER_QUOTE,
+    color: 'Blue',
   }));
 }
 
@@ -70,6 +72,7 @@ export async function getEmployerBrandingCards(): Promise<EmployerBrandingCard[]
         name: `Team Member ${id}`,
         role: 'World Med Trading',
         quote: PLACEHOLDER_QUOTE,
+        color: 'Blue',
       };
     }
 
@@ -93,6 +96,8 @@ export async function getEmployerBrandingCards(): Promise<EmployerBrandingCard[]
     const role =
       firstString(row, ['role', 'job_title', 'position', 'designation', 'department', 'team']) ??
       'World Med Trading';
+    const color = firstString(row, ['color']) ?? 'Blue';
+    const quote = firstString(row, ['testimonial_en', 'testimonial_th']) ?? PLACEHOLDER_QUOTE;
 
     return {
       id,
@@ -100,7 +105,8 @@ export async function getEmployerBrandingCards(): Promise<EmployerBrandingCard[]
       alt,
       name,
       role,
-      quote: PLACEHOLDER_QUOTE,
+      quote,
+      color,
     };
   });
 }

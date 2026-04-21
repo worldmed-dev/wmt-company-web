@@ -1,7 +1,105 @@
 import Image from 'next/image';
 import CareerCarousel from '@/components/career/CareerCarousel';
+import DepartmentScroller from '@/components/career/DepartmentScroller';
+import LeadershipScroller from '@/components/career/LeadershipScroller';
+import { getDepartmentCareers } from '@/lib/departmentCareers';
+import { getLeadershipTeamMembers } from '@/lib/leadershipTeam';
 
-export default function CareerPage() {
+const BENEFIT_CARDS = [
+  {
+    id: 'growth',
+    eyebrow: 'Growth',
+    title: 'Learning that moves with your ambition',
+    description:
+      'From stretch projects to cross-team exposure, we build room for you to sharpen your craft while doing work that matters.',
+    note: 'Real ownership. Real feedback. Real progress.',
+  },
+  {
+    id: 'care',
+    eyebrow: 'Care',
+    title: 'Support for the life behind the work',
+    description:
+      'We care about sustainable pace, thoughtful flexibility, and making sure work can fit around real people and real lives.',
+    note: 'High standards without burnout as a badge.',
+  },
+  {
+    id: 'culture',
+    eyebrow: 'Culture',
+    title: 'A team that celebrates the small wins too',
+    description:
+      'We take impact seriously, but keep the atmosphere warm, collaborative, and human from kickoff to launch.',
+    note: 'Ambitious, grounded, and generous with credit.',
+  },
+  {
+    id: 'impact',
+    eyebrow: 'Impact',
+    title: 'Closer to decisions, not far from them',
+    description:
+      'Ideas travel fast here. You will work close to the people shaping direction and see how your work changes outcomes.',
+    note: 'Less waiting. More building.',
+  },
+  {
+    id: 'flexibility',
+    eyebrow: 'Flexibility',
+    title: 'Space for focus, momentum, and balance',
+    description:
+      'We value clear priorities and thoughtful collaboration so you can do deep work without losing the rhythm of the team.',
+    note: 'Designed for momentum, not noise.',
+  },
+  {
+    id: 'belonging',
+    eyebrow: 'Belonging',
+    title: 'Bring your perspective, not a polished mask',
+    description:
+      'We want people who think differently, care deeply, and make the team stronger by being fully themselves.',
+    note: 'Different viewpoints are part of the advantage.',
+  },
+] as const;
+
+const FUTURE_TEAMMATE_FALLBACK_NAMES = [
+  'Commercial & Growth',
+  'Product & Digital',
+  'Operations & Supply',
+  'Clinical & Quality',
+  'People & Culture',
+  'Finance & Planning',
+] as const;
+
+const FUTURE_TEAMMATE_ACCENTS = [
+  'linear-gradient(135deg, #18315f 0%, #2f5aa6 52%, #ff8300 100%)',
+  'linear-gradient(135deg, #0f2347 0%, #1b4c88 55%, #79a9ff 100%)',
+  'linear-gradient(135deg, #112246 0%, #345d89 52%, #d8e7ff 100%)',
+  'linear-gradient(135deg, #18294d 0%, #2a4470 50%, #8ab1e6 100%)',
+  'linear-gradient(135deg, #173054 0%, #385e96 48%, #ffb36b 100%)',
+  'linear-gradient(135deg, #13284e 0%, #21406c 52%, #6f8ec9 100%)',
+] as const;
+
+export default async function CareerPage() {
+  const [leadershipMembers, departmentCareers] = await Promise.all([
+    getLeadershipTeamMembers(),
+    getDepartmentCareers(),
+  ]);
+  const leadershipCards =
+    leadershipMembers.length > 0
+      ? leadershipMembers
+      : Array.from({ length: 4 }, (_, index) => ({
+          id: `placeholder-${index}`,
+          name: 'Leadership Team',
+          role: 'Profile coming soon',
+          imageUrl: null,
+        }));
+  const futureTeammateDepartments =
+    departmentCareers.length > 0
+      ? departmentCareers
+      : FUTURE_TEAMMATE_FALLBACK_NAMES.map((name, index) => ({
+          id: `department-fallback-${index}`,
+          name,
+        }));
+  const futureTeammateCards = futureTeammateDepartments.map((department, index) => ({
+    ...department,
+    accent: FUTURE_TEAMMATE_ACCENTS[index % FUTURE_TEAMMATE_ACCENTS.length],
+  }));
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
@@ -46,6 +144,79 @@ export default function CareerPage() {
               />
             </div>
           </div>
+        </div>
+      </section>
+      <section className="bg-white px-6 py-20 md:px-12 md:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#112246]/55">
+              Meet the leadership
+            </p>
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#112246] md:text-5xl">
+              The people guiding how we grow, lead, and build together.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-[#112246]/72 md:text-lg">
+              Meet the team shaping our culture, setting direction, and helping every part of World Med move forward with clarity.
+            </p>
+          </div>
+          <LeadershipScroller items={leadershipCards} />
+        </div>
+      </section>
+      <section className="bg-[#f4f7fb] px-6 py-20 md:px-12 md:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#112246]/55">
+              Benefits and perks
+            </p>
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#112246] md:text-5xl">
+              The kind of support that helps good people do great work.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-[#112246]/72 md:text-lg">
+              We are building more than a job description. These are some of the ways we support growth, balance, and the everyday experience of doing meaningful work here.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {BENEFIT_CARDS.map((benefit, index) => (
+              <article
+                key={benefit.id}
+                className="rounded-[2rem] border border-[#112246]/10 bg-white p-6 md:p-7"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#112246]/48">
+                    {benefit.eyebrow}
+                  </p>
+                  <span className="rounded-full border border-[#112246]/10 bg-[#f7f9fc] px-3 py-1 text-[11px] font-bold text-[#112246]/36">
+                    0{index + 1}
+                  </span>
+                </div>
+                <h3 className="mt-5 text-2xl font-bold leading-tight text-[#112246]">
+                  {benefit.title}
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-[#112246]/70 md:text-[15px]">
+                  {benefit.description}
+                </p>
+                <p className="mt-7 text-sm font-semibold text-[#112246]/62">
+                  {benefit.note}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="bg-white px-6 py-20 md:px-12 md:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#112246]/55">
+              Your future teammate
+            </p>
+            <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#112246] md:text-5xl">
+              Find the department where your energy fits best.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-[#112246]/72 md:text-lg">
+              Every team brings a different rhythm, mindset, and kind of excellence. Explore the departments you could grow with next.
+            </p>
+          </div>
+          <DepartmentScroller items={futureTeammateCards} />
         </div>
       </section>
     </div>

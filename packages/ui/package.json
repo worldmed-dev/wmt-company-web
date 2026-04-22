@@ -1,0 +1,26 @@
+{
+  "name": "@wmt/ui",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0"
+  },
+  "peerDependencies": {
+    "next": "^16.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@wmt/config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "next": "16.2.0",
+    "typescript": "^5"
+  }
+}

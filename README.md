@@ -1,37 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WMT Monorepo
 
-## Getting Started
+This repository is now a `pnpm` workspace powered by `Turborepo`.
 
-First, run the development server:
+## Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```text
+apps/
+  main/      Existing multilingual Next.js website
+  career/    Dedicated career portal app
+
+packages/
+  ui/        Shared React UI components
+  config/    Shared Tailwind, ESLint, and TypeScript config
+  shared/    Shared utilities and cross-app types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requirements
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 20+
+- Corepack enabled
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Install
 
-## Learn More
+```bash
+corepack pnpm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the main marketing site:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+corepack pnpm dev:main
+```
 
-## Deploy on Vercel
+Run the career app:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+corepack pnpm dev:career
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# wmt-company-web
+Run both apps together through Turbo:
+
+```bash
+corepack pnpm dev
+```
+
+## Quality Checks
+
+```bash
+corepack pnpm lint
+corepack pnpm typecheck
+corepack pnpm build
+```
+
+## Shared Packages
+
+### `@wmt/ui`
+
+Reusable UI lives in `packages/ui`. Current shared components include:
+
+- `ProductCard`
+- `ProductFilterCard`
+- `HeroBanner`
+- `BrandLogoCarousel`
+- `SiteFooter`
+
+### `@wmt/config`
+
+Shared config lives in `packages/config`:
+
+- ESLint config
+- Tailwind v4 global CSS
+- PostCSS config
+- TypeScript base config
+
+### `@wmt/shared`
+
+Common cross-app code that is not UI-specific, such as:
+
+- shared domain types
+- slug helpers
+
+## Notes
+
+- The original app has moved from the repo root into `apps/main`.
+- Shared Tailwind styling is imported from `@wmt/config/tailwind.css`.
+- The repo uses a single `pnpm-lock.yaml` at the root.

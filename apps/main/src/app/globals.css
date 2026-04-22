@@ -1,0 +1,22 @@
+@import "@wmt/config/tailwind.css";
+
+@font-face {
+  font-family: 'Montserrat Local';
+  src: url('/fonts/montserrat-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Architects Daughter Local';
+  src: url('/fonts/architects-daughter-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-montserrat: 'Montserrat Local';
+  --font-architects-daughter: 'Architects Daughter Local', cursive;
+}

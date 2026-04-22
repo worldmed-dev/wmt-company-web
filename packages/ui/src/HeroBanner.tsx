@@ -16,11 +16,11 @@ export function HeroBanner({
   title,
   description,
   ctaLabel,
-  ctaHref = "#",
+  ctaHref,
   className = "",
 }: HeroBannerProps) {
   return (
-    <div
+    <section
       className={["relative min-h-screen w-full overflow-hidden bg-[#122246]", className].filter(Boolean).join(" ")}
       style={{ height: '100svh' }}
     >
@@ -33,10 +33,10 @@ export function HeroBanner({
         sizes="100vw"
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#122246] via-[#122246]/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#122246] via-[#122246]/40 to-transparent" />
 
-      <div className="absolute bottom-10 left-1/2 w-full max-w-7xl -translate-x-1/2 px-6 md:px-12">
-        <h1 className="text-3xl font-normal uppercase leading-tight tracking-tight text-white md:text-5xl">
+      <div className="absolute bottom-2 left-1/2 w-full max-w-7xl -translate-x-1/2 px-6 md:bottom-4 md:px-12">
+        <h1 className="text-3xl uppercase leading-tight tracking-tight text-white md:text-5xl">
           {title}
         </h1>
         {description && (
@@ -44,15 +44,23 @@ export function HeroBanner({
             {description}
           </p>
         )}
-        {ctaLabel && (
+        {ctaLabel && ctaHref && (
           <a
             href={ctaHref}
-            className="mt-8 inline-flex rounded-full border border-white/20 bg-white/10 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-white/20"
+            className="mt-8 inline-flex rounded-full border border-white/20 bg-white/10 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-white/20"
           >
             {ctaLabel}
           </a>
         )}
+        {ctaLabel && !ctaHref && (
+          <button
+            type="button"
+            className="mt-8 inline-flex rounded-full border border-white/20 bg-white/10 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-white/20"
+          >
+            {ctaLabel}
+          </button>
+        )}
       </div>
-    </div>
+    </section>
   );
 }

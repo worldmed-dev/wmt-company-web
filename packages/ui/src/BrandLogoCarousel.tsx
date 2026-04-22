@@ -16,20 +16,16 @@ function CarouselRow({ brands, reverse }: { brands: Brand[]; reverse?: boolean }
         style={{ background: 'linear-gradient(to left, var(--ci-primary), transparent)' }}
       />
       <div
-        className="flex w-max items-center gap-6 md:gap-10"
+        className="flex w-max items-center gap-12"
         style={{ animation: `${reverse ? 'scrollRight' : 'scrollLeft'} 80s linear infinite` }}
       >
         {doubled.map((brand, index) => (
-          <div
+          <img
             key={`${brand.id}-${index}`}
-            className="flex h-12 w-[9rem] shrink-0 items-center justify-center md:h-14 md:w-[11rem] lg:w-[12rem]"
-          >
-            <img
-              src={brand.logo_url}
-              alt={`Brand ${brand.id}`}
-              className="max-h-full w-auto max-w-full object-contain brightness-0 invert opacity-50"
-            />
-          </div>
+            src={brand.logo_url}
+            alt={`Brand ${brand.id}`}
+            className="h-8 max-w-[8rem] w-auto object-contain brightness-0 invert opacity-50 md:max-w-[8.5rem]"
+          />
         ))}
       </div>
     </div>
@@ -38,7 +34,7 @@ function CarouselRow({ brands, reverse }: { brands: Brand[]; reverse?: boolean }
 
 export function BrandLogoCarousel({ row1, row2 }: { row1: Brand[]; row2: Brand[] }) {
   return (
-    <div className="mx-auto mt-10 flex max-w-7xl flex-col gap-10 px-6 md:px-12">
+    <div className="mx-auto mt-8 flex max-w-7xl flex-col gap-8 px-6 md:px-12">
       <CarouselRow brands={row1} />
       <CarouselRow brands={row2} reverse />
     </div>

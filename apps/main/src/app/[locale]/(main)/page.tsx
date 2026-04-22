@@ -11,9 +11,9 @@ export default async function Home() {
           backgroundAlt="Medical professionals"
           title={
             <>
-              Better Care
+              <span className="font-normal">Better Care</span>
               <br />
-              Trust Always
+              <span className="font-bold">Trust Always</span>
             </>
           }
           description={

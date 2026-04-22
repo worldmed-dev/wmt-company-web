@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, usePathname, Link } from '@/lib/navigation';
 import { ChevronDownIcon, MagnifyingGlassIcon, Bars3Icon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { toSlug, type CategoryWithSubs } from '@wmt/shared';
+import { getCareerSiteUrl, toSlug, type CategoryWithSubs } from '@wmt/shared';
 
 type MenuItem = { title: string; href?: string; sub?: { title: string; href?: string }[] };
 type Menu = {
@@ -101,6 +101,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const careerSiteUrl = getCareerSiteUrl();
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -149,13 +150,13 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                   <ChevronDownIcon className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-4 h-4 transition-all duration-200 ${openMenu === menu.key ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`} />
                 </button>
               ))}
-              <Link
-                href="/career"
+              <a
+                href={careerSiteUrl}
                 onClick={() => setOpenMenu(null)}
                 className="text-sm font-bold text-[#112246]/70 hover:text-[#112246] uppercase tracking-[0.15em] transition-colors"
               >
                 {t('nav.career')}
-              </Link>
+              </a>
             </div>
 
             {/* Right */}
@@ -223,8 +224,8 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                 )}
               </div>
             ))}
-            <Link
-              href="/career"
+            <a
+              href={careerSiteUrl}
               onClick={() => {
                 setMobileOpen(false);
                 setMobileExpanded(null);
@@ -233,7 +234,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
               className="py-3 text-sm font-bold text-white/70 tracking-[0.15em] uppercase border-b border-white/10"
             >
               {t('nav.career')}
-            </Link>
+            </a>
             <div className="mt-6 flex items-center gap-4">
               <button onClick={() => switchLocale('en')} className={`text-sm font-bold ${locale === 'en' ? 'text-white' : 'text-white/50'}`}>EN</button>
               <button onClick={() => switchLocale('th')} className={`text-sm font-bold ${locale === 'th' ? 'text-white' : 'text-white/50'}`}>TH</button>

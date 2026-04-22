@@ -2,7 +2,7 @@
 
 import { Link } from '@/lib/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { toSlug, type CategoryWithSubs } from '@wmt/shared';
+import { getCareerSiteUrl, toSlug, type CategoryWithSubs } from '@wmt/shared';
 import { SiteFooter, type SiteFooterSection } from '@wmt/ui';
 
 type Props = {
@@ -13,6 +13,7 @@ export default function Footer({ categories }: Props) {
   const locale = useLocale();
   const t = useTranslations();
   const isEn = locale === 'en';
+  const careerSiteUrl = getCareerSiteUrl();
   const linkClass = "text-sm text-white/60 transition-colors hover:text-white";
   const socialClass = "flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-xs font-bold text-white/60 transition-colors hover:border-white/40 hover:text-white";
 
@@ -49,7 +50,7 @@ export default function Footer({ categories }: Props) {
     {
       title: t('nav.career'),
       items: [
-        <a key="positions" href="#" className={linkClass}>{isEn ? 'Open Positions' : 'ตำแหน่งงานว่าง'}</a>,
+        <a key="positions" href={careerSiteUrl} className={linkClass}>{isEn ? 'Open Positions' : 'ตำแหน่งงานว่าง'}</a>,
       ],
       extra: (
         <>

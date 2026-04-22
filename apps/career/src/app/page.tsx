@@ -1,9 +1,11 @@
+import Link from 'next/link';
 import Image from 'next/image';
 import CareerCarousel from '@/components/career/CareerCarousel';
 import DepartmentScroller from '@/components/career/DepartmentScroller';
 import LeadershipScroller from '@/components/career/LeadershipScroller';
 import { getDepartmentCareers } from '@/lib/departmentCareers';
 import { getLeadershipTeamMembers } from '@/lib/leadershipTeam';
+import { getMainSiteUrl, joinSiteUrl } from '@wmt/shared';
 
 const BENEFIT_CARDS = [
   {
@@ -74,6 +76,8 @@ const FUTURE_TEAMMATE_ACCENTS = [
   'linear-gradient(135deg, #13284e 0%, #21406c 52%, #6f8ec9 100%)',
 ] as const;
 
+const mainSiteUrl = getMainSiteUrl();
+
 export default async function CareerPage() {
   const [leadershipMembers, departmentCareers] = await Promise.all([
     getLeadershipTeamMembers(),
@@ -119,7 +123,7 @@ export default async function CareerPage() {
         </button>
       </div>
       <CareerCarousel />
-      <section className="bg-[#112246] px-6 py-20 md:px-12 md:py-28">
+      <section id="our-team" className="scroll-mt-32 bg-[#112246] px-6 py-20 md:px-12 md:py-28">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
           <div className="max-w-xl">
             <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl">
@@ -162,7 +166,7 @@ export default async function CareerPage() {
           <LeadershipScroller items={leadershipCards} />
         </div>
       </section>
-      <section className="bg-[#f4f7fb] px-6 py-20 md:px-12 md:py-28">
+      <section id="culture" className="scroll-mt-32 bg-[#f4f7fb] px-6 py-20 md:px-12 md:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#112246]/55">
@@ -203,7 +207,7 @@ export default async function CareerPage() {
           </div>
         </div>
       </section>
-      <section className="bg-white px-6 py-20 md:px-12 md:py-28">
+      <section id="job" className="scroll-mt-32 bg-white px-6 py-20 md:px-12 md:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#112246]/55">
@@ -217,6 +221,33 @@ export default async function CareerPage() {
             </p>
           </div>
           <DepartmentScroller items={futureTeammateCards} />
+        </div>
+      </section>
+      <section id="internship" className="scroll-mt-32 bg-[#112246] px-6 py-20 md:px-12 md:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="rounded-[2rem] border border-white/12 bg-white/8 p-8 md:p-10 lg:p-12">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/58">
+                  Internship
+                </p>
+                <h2 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
+                  Start with hands-on experience that feels like real work.
+                </h2>
+                <p className="mt-5 max-w-2xl text-base leading-8 text-white/72 md:text-lg">
+                  We are open to interns who want meaningful exposure across commercial, operations,
+                  digital, and support teams. If you are curious, proactive, and ready to learn fast,
+                  we would love to hear from you.
+                </p>
+              </div>
+              <Link
+                href={joinSiteUrl(mainSiteUrl, '/en/contact')}
+                className="inline-flex items-center justify-center rounded-full border border-white/18 bg-white/12 px-8 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition-colors hover:bg-white/20"
+              >
+                Ask About Internships
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>

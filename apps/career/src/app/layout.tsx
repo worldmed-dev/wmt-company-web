@@ -1,18 +1,18 @@
 import "./globals.css";
 import Navbar from '@/components/layout/Navbar';
-import { getProductCategories } from '@/lib/categories';
+import { connection } from 'next/server';
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const categories = await getProductCategories();
+  await connection();
 
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col font-sans">
-        <Navbar categories={categories} />
+        <Navbar />
         {children}
       </body>
     </html>

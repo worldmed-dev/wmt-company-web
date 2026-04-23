@@ -4,16 +4,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { getCareerSiteUrl, getMainSiteUrl, joinSiteUrl } from '@wmt/shared';
+import { getMainSiteUrl, joinSiteUrl } from '@wmt/shared';
 
 const mainSiteUrl = getMainSiteUrl();
-const careerSiteUrl = getCareerSiteUrl();
 
 const careerNavItems = [
-  { label: 'Our Team', href: joinSiteUrl(careerSiteUrl, '/#our-team') },
-  { label: 'Culture', href: joinSiteUrl(careerSiteUrl, '/#culture') },
-  { label: 'Job', href: joinSiteUrl(careerSiteUrl, '/#job') },
-  { label: 'Internship', href: joinSiteUrl(careerSiteUrl, '/#internship') },
+  { label: 'Our Team', href: '/#our-team' },
+  { label: 'Culture', href: '/culture' },
+  { label: 'Job', href: '/#job' },
+  { label: 'Internship', href: '/#internship' },
 ] as const;
 
 export default function Navbar() {
@@ -81,6 +80,7 @@ export default function Navbar() {
 
       {mobileOpen && (
         <div
+          data-lenis-prevent
           className="fixed inset-0 z-40 overflow-y-auto bg-black/70 pt-28 backdrop-blur-2xl lg:hidden"
           style={{ animation: 'megaMenuIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
         >

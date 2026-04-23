@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from '@/components/layout/Navbar';
 import { connection } from 'next/server';
+import { SmoothScrollProvider } from '@wmt/ui';
 
 export default async function RootLayout({
   children,
@@ -12,8 +13,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col font-sans">
-        <Navbar />
-        {children}
+        <SmoothScrollProvider>
+          <Navbar />
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );

@@ -1,62 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import CareerCarousel from '@/components/career/CareerCarousel';
+import CultureBenefitsGrid from '@/components/career/CultureBenefitsGrid';
 import DepartmentScroller from '@/components/career/DepartmentScroller';
 import LeadershipScroller from '@/components/career/LeadershipScroller';
 import { getDepartmentCareers } from '@/lib/departmentCareers';
 import { getLeadershipTeamMembers } from '@/lib/leadershipTeam';
 import { getMainSiteUrl, joinSiteUrl } from '@wmt/shared';
-
-const BENEFIT_CARDS = [
-  {
-    id: 'growth',
-    eyebrow: 'Growth',
-    title: 'Learning that moves with your ambition',
-    description:
-      'From stretch projects to cross-team exposure, we build room for you to sharpen your craft while doing work that matters.',
-    note: 'Real ownership. Real feedback. Real progress.',
-  },
-  {
-    id: 'care',
-    eyebrow: 'Care',
-    title: 'Support for the life behind the work',
-    description:
-      'We care about sustainable pace, thoughtful flexibility, and making sure work can fit around real people and real lives.',
-    note: 'High standards without burnout as a badge.',
-  },
-  {
-    id: 'culture',
-    eyebrow: 'Culture',
-    title: 'A team that celebrates the small wins too',
-    description:
-      'We take impact seriously, but keep the atmosphere warm, collaborative, and human from kickoff to launch.',
-    note: 'Ambitious, grounded, and generous with credit.',
-  },
-  {
-    id: 'impact',
-    eyebrow: 'Impact',
-    title: 'Closer to decisions, not far from them',
-    description:
-      'Ideas travel fast here. You will work close to the people shaping direction and see how your work changes outcomes.',
-    note: 'Less waiting. More building.',
-  },
-  {
-    id: 'flexibility',
-    eyebrow: 'Flexibility',
-    title: 'Space for focus, momentum, and balance',
-    description:
-      'We value clear priorities and thoughtful collaboration so you can do deep work without losing the rhythm of the team.',
-    note: 'Designed for momentum, not noise.',
-  },
-  {
-    id: 'belonging',
-    eyebrow: 'Belonging',
-    title: 'Bring your perspective, not a polished mask',
-    description:
-      'We want people who think differently, care deeply, and make the team stronger by being fully themselves.',
-    note: 'Different viewpoints are part of the advantage.',
-  },
-] as const;
 
 const FUTURE_TEAMMATE_FALLBACK_NAMES = [
   'Commercial & Growth',
@@ -107,7 +57,7 @@ export default async function CareerPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="w-full min-h-[72vh] md:min-h-[82vh] flex flex-col items-center justify-center px-6 py-24 md:px-12 md:py-32">
+      <div className="w-full min-h-[72vh] md:min-h-[82vh] flex flex-col items-center justify-center pt-24 pb-0 md:pt-32 md:pb-0">
         <h1
           className="text-4xl md:text-6xl text-[#112246] leading-tight text-center"
           style={{ fontFamily: 'var(--font-architects-daughter)' }}
@@ -179,32 +129,7 @@ export default async function CareerPage() {
               We are building more than a job description. These are some of the ways we support growth, balance, and the everyday experience of doing meaningful work here.
             </p>
           </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {BENEFIT_CARDS.map((benefit, index) => (
-              <article
-                key={benefit.id}
-                className="rounded-[2rem] border border-[#112246]/10 bg-white p-6 md:p-7"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#112246]/48">
-                    {benefit.eyebrow}
-                  </p>
-                  <span className="rounded-full border border-[#112246]/10 bg-[#f7f9fc] px-3 py-1 text-[11px] font-bold text-[#112246]/36">
-                    0{index + 1}
-                  </span>
-                </div>
-                <h3 className="mt-5 text-2xl font-bold leading-tight text-[#112246]">
-                  {benefit.title}
-                </h3>
-                <p className="mt-4 text-sm leading-7 text-[#112246]/70 md:text-[15px]">
-                  {benefit.description}
-                </p>
-                <p className="mt-7 text-sm font-semibold text-[#112246]/62">
-                  {benefit.note}
-                </p>
-              </article>
-            ))}
-          </div>
+          <CultureBenefitsGrid />
         </div>
       </section>
       <section id="job" className="scroll-mt-32 bg-white px-6 py-20 md:px-12 md:py-28">

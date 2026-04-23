@@ -124,10 +124,10 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
     <>
       <nav
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style={{ backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.8)' : 'transparent', backdropFilter: scrolled ? 'blur(24px)' : 'none' }}
+        style={{ backgroundColor: 'rgba(255, 255, 255, 1)', backdropFilter: scrolled ? 'blur(24px)' : 'none' }}
         onMouseLeave={() => setOpenMenu(null)}
       >
-        <div className="border-b border-white/10">
+        <div>
           <div className="max-w-[1400px] mx-auto px-6 h-28 flex items-center justify-between py-4">
 
             {/* Logo */}
@@ -184,7 +184,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
             </div>
 
             {/* Hamburger */}
-            <button className="lg:hidden text-white p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            <button className="lg:hidden text-[#112246] p-2" onClick={() => setMobileOpen(!mobileOpen)}>
               {mobileOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
             </button>
           </div>
@@ -199,6 +199,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div
+          data-lenis-prevent
           className="fixed inset-0 z-40 pt-28 backdrop-blur-2xl bg-black/70 lg:hidden overflow-y-auto"
           style={{ animation: 'megaMenuIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
         >

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toSlug, type CategoryWithSubs, type SubCategory } from '@wmt/shared';
 import { FunnelIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
@@ -9,49 +10,137 @@ import ProductCard from './ProductCard';
 
 type Props = {
   currentCategory: CategoryWithSubs | null;
-  initialSubSlug?: string | null;
+  initialSubSlugs?: string[];
 };
 
-export default function ProductListClient({ currentCategory, initialSubSlug }: Props) {
+function resolveSelectedSubIds(subCategories: SubCategory[], selectedSlugs: string[]) {
+  if (selectedSlugs.length === 0) {
+    return [];
+  }
+
+  return subCategories
+    .filter((sub) => selectedSlugs.includes(toSlug(sub.name_en)))
+    .map((sub) => sub.id);
+}
+
+export default function ProductListClient({
+  currentCategory,
+  initialSubSlugs = [],
+}: Props) {
   const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const isEn = locale === 'en';
+  const categoryBarRef = useRef<HTMLDivElement>(null);
+  const isProductSlugPage = /^\/(?:(?:en|th)\/)?products\/[^/]+\/?$/.test(pathname);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
-  const matchedSub = currentCategory?.sub_categories?.find((s) => toSlug(s.name_en) === initialSubSlug);
-  const [selectedSubs, setSelectedSubs] = useState<number[]>(matchedSub ? [matchedSub.id] : []);
 
   const categoryName = currentCategory
     ? (isEn ? currentCategory.name_en : currentCategory.name_th)
     : '';
 
   const subCategories: SubCategory[] = currentCategory?.sub_categories ?? [];
+  const initialSubSlugsKey = initialSubSlugs.join('|');
+  const initialSelectedSubs = resolveSelectedSubIds(subCategories, initialSubSlugs);
+  const [selectedSubs, setSelectedSubs] = useState<number[]>(initialSelectedSubs);
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  useEffect(() => {
+    setSelectedSubs(resolveSelectedSubIds(currentCategory?.sub_categories ?? [], initialSubSlugs));
+  }, [currentCategory, initialSubSlugsKey]);
+
+  useEffect(() => {
+    if (!isProductSlugPage) {
+      document.documentElement.style.setProperty('--main-navbar-translate-y', '0%');
+      return;
+    }
+
+    const onScroll = () => {
+      const categoryBar = categoryBarRef.current;
+
+      if (!categoryBar) {
+        return;
+      }
+
+      const isDocked = categoryBar.getBoundingClientRect().top <= 0;
+
+      document.documentElement.style.setProperty(
+        '--main-navbar-translate-y',
+        isDocked ? '-100%' : '0%',
+      );
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      document.documentElement.style.setProperty('--main-navbar-translate-y', '0%');
+    };
+  }, [isProductSlugPage]);
+
+  const syncSelectedSubs = (nextSelectedSubs: number[]) => {
+    setSelectedSubs(nextSelectedSubs);
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete('sub');
+
+    nextSelectedSubs
+      .map((subId) => subCategories.find((sub) => sub.id === subId))
+      .filter((sub): sub is SubCategory => Boolean(sub))
+      .forEach((sub) => {
+        params.append('sub', toSlug(sub.name_en));
+      });
+
+    const nextQuery = params.toString();
+    router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, {
+      scroll: false,
+    });
+  };
 
   const toggleSub = (id: number) => {
-    setSelectedSubs((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
-    );
+    const nextSelectedSubs = selectedSubs.includes(id)
+      ? selectedSubs.filter((subId) => subId !== id)
+      : [...selectedSubs, id];
+
+    syncSelectedSubs(nextSelectedSubs);
   };
+
+  const filteredSubCategories = subCategories.filter((sub) => {
+    const matchesSelectedSubs =
+      selectedSubs.length === 0 || selectedSubs.includes(sub.id);
+
+    if (!matchesSelectedSubs) {
+      return false;
+    }
+
+    if (!normalizedQuery) {
+      return true;
+    }
+
+    return (
+      sub.name_en.toLowerCase().includes(normalizedQuery) ||
+      sub.name_th.toLowerCase().includes(normalizedQuery)
+    );
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Hero */}
-      <div className="relative w-full aspect-[3/2] md:aspect-auto md:h-[80vh] overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80"
-          alt="Medical professionals"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#15233E] via-[#15233E]/40 to-transparent" />
+      <div className="pt-28 lg:pt-28">
+        <div
+          ref={categoryBarRef}
+          className="sticky top-0 z-40 mb-8 flex min-h-[100px] w-full items-center px-4 py-6 sm:px-6 lg:px-8"
+          style={{ backgroundColor: 'var(--ci-primary-deep)' }}
+        >
+          <div className="mx-auto w-full max-w-7xl">
+            <h1 className="text-[18px] font-bold text-white">{categoryName}</h1>
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 lg:-mt-24">
-
-        {/* Title */}
-        <div className="bg-gray-50 rounded-t-[32px] p-6 lg:p-10 mb-8 flex items-center min-h-[100px]">
-          <h1 className="text-2xl lg:text-3xl font-bold text-[#2C3E5D]">{categoryName}</h1>
-        </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div className="flex flex-col lg:flex-row gap-8">
 
@@ -61,7 +150,7 @@ export default function ProductListClient({ currentCategory, initialSubSlug }: P
               subCategories={subCategories}
               selectedSubs={selectedSubs}
               onToggle={toggleSub}
-              onClear={() => setSelectedSubs([])}
+              onClear={() => syncSelectedSubs([])}
               isEn={isEn}
             />
           </aside>
@@ -103,7 +192,7 @@ export default function ProductListClient({ currentCategory, initialSubSlug }: P
                   subCategories={subCategories}
                   selectedSubs={selectedSubs}
                   onToggle={toggleSub}
-                  onClear={() => setSelectedSubs([])}
+                  onClear={() => syncSelectedSubs([])}
                   isEn={isEn}
                   showSearch
                   onSearch={() => setFilterOpen(false)}
@@ -113,7 +202,7 @@ export default function ProductListClient({ currentCategory, initialSubSlug }: P
 
             {/* Product Grid */}
             <div className="mt-6 grid grid-cols-2 gap-5 md:gap-6 lg:grid-cols-3 lg:gap-8">
-              {subCategories.map((sub) => {
+              {filteredSubCategories.map((sub) => {
                 const subName = isEn ? sub.name_en : sub.name_th;
                 return (
                   <ProductCard
@@ -124,6 +213,18 @@ export default function ProductListClient({ currentCategory, initialSubSlug }: P
                 );
               })}
             </div>
+            {filteredSubCategories.length === 0 && (
+              <div className="mt-6 rounded-[32px] border border-dashed border-[#15233E]/15 bg-white px-6 py-12 text-center text-[#2C3E5D]/70 shadow-sm">
+                <p className="text-base font-semibold">
+                  {isEn ? 'No matching subcategories found.' : 'ไม่พบหมวดหมู่ย่อยที่ตรงกับตัวกรอง'}
+                </p>
+                <p className="mt-2 text-sm text-[#2C3E5D]/50">
+                  {isEn
+                    ? 'Try clearing the filter or searching with a different keyword.'
+                    : 'ลองล้างตัวกรองหรือค้นหาด้วยคำอื่น'}
+                </p>
+              </div>
+            )}
           </main>
         </div>
       </div>

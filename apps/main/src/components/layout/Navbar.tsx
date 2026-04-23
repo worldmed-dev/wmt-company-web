@@ -109,7 +109,11 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    onScroll();
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -124,7 +128,11 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
     <>
       <nav
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style={{ backgroundColor: 'rgba(255, 255, 255, 1)', backdropFilter: scrolled ? 'blur(24px)' : 'none' }}
+        style={{
+          backgroundColor: 'rgba(255, 255, 255, 1)',
+          backdropFilter: scrolled ? 'blur(24px)' : 'none',
+          transform: 'translateY(var(--main-navbar-translate-y))',
+        }}
         onMouseLeave={() => setOpenMenu(null)}
       >
         <div>

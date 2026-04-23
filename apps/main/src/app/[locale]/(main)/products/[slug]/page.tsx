@@ -7,10 +7,11 @@ export default async function ProductSlugPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ sub?: string }>;
+  searchParams: Promise<{ sub?: string | string[] }>;
 }) {
   const { slug } = await params;
   const { sub } = await searchParams;
+  const initialSubSlugs = Array.isArray(sub) ? sub : sub ? [sub] : [];
 
   const currentCategory = await getCategoryBySlug(slug);
 
@@ -19,7 +20,7 @@ export default async function ProductSlugPage({
   return (
     <ProductListClient
       currentCategory={currentCategory}
-      initialSubSlug={sub ?? null}
+      initialSubSlugs={initialSubSlugs}
     />
   );
 }

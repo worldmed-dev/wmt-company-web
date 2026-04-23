@@ -5,3 +5,4 @@ export * from "./HeroBanner";
 export * from "./BrandLogoCarousel";
 export * from "./SiteFooter";
 export * from "./SmoothScrollProvider";
+export * from "./PageTransition";

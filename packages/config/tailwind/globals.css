@@ -37,6 +37,8 @@
 
   /* Brand Colors */
   --ci-primary: #122246;
+  --ci-primary-deep: #112246;
+  --main-navbar-translate-y: 0%;
 
   /* Spacing System */
   --space-0: 0;

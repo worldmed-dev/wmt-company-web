@@ -1,26 +1,36 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const PAGE_TRANSITION = {
-  duration: 0.24,
-  ease: [0.22, 1, 0.36, 1],
+const TRANSITION_IN = {
+  duration: 1.2,
+  ease: [0.16, 1, 0.3, 1],
+} as const;
+
+const TRANSITION_OUT = {
+  duration: 0.5,
+  ease: [0.4, 0, 1, 1],
 } as const;
 
 type PageTransitionProps = {
   children: React.ReactNode;
   className?: string;
+  pathname?: string;
 };
 
-export function PageTransition({ children, className }: PageTransitionProps) {
+export function PageTransition({ children, className, pathname }: PageTransitionProps) {
   return (
-    <motion.div
-      className={`${className ?? ''} will-change-transform will-change-opacity`}
-      initial={{ x: 18, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={PAGE_TRANSITION}
-    >
-      {children}
-    </motion.div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={pathname}
+        className={`${className ?? ''} will-change-transform will-change-opacity overflow-x-hidden`}
+        initial={{ x: '60px', opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ opacity: 0, transition: TRANSITION_OUT }}
+        transition={TRANSITION_IN}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 }

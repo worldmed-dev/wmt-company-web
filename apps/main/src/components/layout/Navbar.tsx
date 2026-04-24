@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, usePathname, Link } from '@/lib/navigation';
 import { ChevronDownIcon, MagnifyingGlassIcon, Bars3Icon, XMarkIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -127,25 +127,24 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="w-full"
         style={{
           backgroundColor: 'rgba(255, 255, 255, 1)',
           backdropFilter: scrolled ? 'blur(24px)' : 'none',
-          transform: 'translateY(var(--main-navbar-translate-y))',
         }}
         onMouseLeave={() => setOpenMenu(null)}
       >
         <div>
-          <div className="max-w-[1400px] mx-auto px-6 h-28 flex items-center justify-between py-4">
+          <div className="max-w-[1400px] mx-auto px-6 h-24 flex items-center justify-between py-4">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center cursor-pointer">
+            <Link href="/" className="flex items-center cursor-pointer" onMouseEnter={() => setOpenMenu(null)}>
               <Image
                 src="/wmt-logo.webp"
                 alt="World Med Logo"
                 width={275}
                 height={80}
-                className="h-20 w-auto"
+                className="h-12 w-auto"
               />
             </Link>
 
@@ -161,6 +160,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
               <a
                 href={careerSiteUrl}
                 onClick={() => setOpenMenu(null)}
+                onMouseEnter={() => setOpenMenu(null)}
                 className="text-sm font-bold text-[#112246]/70 hover:text-[#112246] uppercase tracking-[0.15em] transition-colors"
               >
                 {t('nav.career')}
@@ -168,7 +168,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
             </div>
 
             {/* Right */}
-            <div className="hidden lg:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-6" onMouseEnter={() => setOpenMenu(null)}>
               <button className="text-[#112246]/70 hover:text-[#112246]">
                 <MagnifyingGlassIcon className="w-5 h-5 stroke-2" />
               </button>
@@ -208,7 +208,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
       {mobileOpen && (
         <div
           data-lenis-prevent
-          className="fixed inset-0 z-40 pt-28 backdrop-blur-2xl bg-black/70 lg:hidden overflow-y-auto"
+          className="fixed inset-0 z-40 pt-24 backdrop-blur-2xl bg-black/70 lg:hidden overflow-y-auto"
           style={{ animation: 'megaMenuIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
         >
           <div className="flex flex-col px-6 py-6 gap-1">

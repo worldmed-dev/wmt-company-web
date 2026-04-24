@@ -6,7 +6,7 @@ export default async function Home() {
     <>
       <main>
         {/* Hero */}
-        <section className="bg-white px-6 pb-10 pt-28 md:pb-12 md:pt-32">
+        <section className="bg-white px-6 pb-10 pt-24 md:pb-12 md:pt-24">
           <div className="relative mx-auto min-h-[36rem] w-full max-w-[1400px] overflow-hidden rounded-[2.5rem] bg-white md:min-h-[46rem]">
             <Image
               src="https://ylxyojvodlhajgvuorll.supabase.co/storage/v1/object/public/Image/cover_image/test-cover.webp"

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toSlug, type CategoryWithSubs, type SubCategory } from '@wmt/shared';
 import { FunnelIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 import FilterCard from './FilterCard';
 import ProductCard from './ProductCard';
 
@@ -14,28 +15,17 @@ type Props = {
 };
 
 function resolveSelectedSubIds(subCategories: SubCategory[], selectedSlugs: string[]) {
-  if (selectedSlugs.length === 0) {
-    return [];
-  }
-
+  if (selectedSlugs.length === 0) return [];
   return subCategories
     .filter((sub) => selectedSlugs.includes(toSlug(sub.name_en)))
     .map((sub) => sub.id);
 }
 
-export default function ProductListClient({
-  currentCategory,
-  initialSubSlugs = [],
-}: Props) {
+export default function ProductListClient({ currentCategory, initialSubSlugs = [] }: Props) {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const isEn = locale === 'en';
-  const categoryBarRef = useRef<HTMLDivElement>(null);
-  const isProductSlugPage = /^\/(?:(?:en|th)\/)?products\/[^/]+\/?$/.test(pathname);
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterOpen, setFilterOpen] = useState(false);
 
   const categoryName = currentCategory
     ? (isEn ? currentCategory.name_en : currentCategory.name_th)
@@ -43,83 +33,40 @@ export default function ProductListClient({
 
   const subCategories: SubCategory[] = currentCategory?.sub_categories ?? [];
   const initialSubSlugsKey = initialSubSlugs.join('|');
-  const initialSelectedSubs = resolveSelectedSubIds(subCategories, initialSubSlugs);
-  const [selectedSubs, setSelectedSubs] = useState<number[]>(initialSelectedSubs);
+  const [selectedSubs, setSelectedSubs] = useState<number[]>(() =>
+    resolveSelectedSubIds(subCategories, initialSubSlugs)
+  );
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterOpen, setFilterOpen] = useState(false);
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
   useEffect(() => {
     setSelectedSubs(resolveSelectedSubIds(currentCategory?.sub_categories ?? [], initialSubSlugs));
   }, [currentCategory, initialSubSlugsKey]);
 
-  useEffect(() => {
-    if (!isProductSlugPage) {
-      document.documentElement.style.setProperty('--main-navbar-translate-y', '0%');
-      return;
-    }
-
-    const onScroll = () => {
-      const categoryBar = categoryBarRef.current;
-
-      if (!categoryBar) {
-        return;
-      }
-
-      const isDocked = categoryBar.getBoundingClientRect().top <= 0;
-
-      document.documentElement.style.setProperty(
-        '--main-navbar-translate-y',
-        isDocked ? '-100%' : '0%',
-      );
-    };
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      document.documentElement.style.setProperty('--main-navbar-translate-y', '0%');
-    };
-  }, [isProductSlugPage]);
-
   const syncSelectedSubs = (nextSelectedSubs: number[]) => {
     setSelectedSubs(nextSelectedSubs);
-
     const params = new URLSearchParams(window.location.search);
     params.delete('sub');
-
     nextSelectedSubs
       .map((subId) => subCategories.find((sub) => sub.id === subId))
       .filter((sub): sub is SubCategory => Boolean(sub))
-      .forEach((sub) => {
-        params.append('sub', toSlug(sub.name_en));
-      });
-
+      .forEach((sub) => params.append('sub', toSlug(sub.name_en)));
     const nextQuery = params.toString();
-    router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, {
-      scroll: false,
-    });
+    router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, { scroll: false });
   };
 
   const toggleSub = (id: number) => {
-    const nextSelectedSubs = selectedSubs.includes(id)
-      ? selectedSubs.filter((subId) => subId !== id)
-      : [...selectedSubs, id];
-
-    syncSelectedSubs(nextSelectedSubs);
+    syncSelectedSubs(
+      selectedSubs.includes(id)
+        ? selectedSubs.filter((subId) => subId !== id)
+        : [...selectedSubs, id]
+    );
   };
 
   const filteredSubCategories = subCategories.filter((sub) => {
-    const matchesSelectedSubs =
-      selectedSubs.length === 0 || selectedSubs.includes(sub.id);
-
-    if (!matchesSelectedSubs) {
-      return false;
-    }
-
-    if (!normalizedQuery) {
-      return true;
-    }
-
+    if (selectedSubs.length > 0 && !selectedSubs.includes(sub.id)) return false;
+    if (!normalizedQuery) return true;
     return (
       sub.name_en.toLowerCase().includes(normalizedQuery) ||
       sub.name_th.toLowerCase().includes(normalizedQuery)
@@ -127,21 +74,21 @@ export default function ProductListClient({
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <div className="pt-28 lg:pt-28">
-        <div
-          ref={categoryBarRef}
-          className="sticky top-0 z-40 mb-8 flex min-h-[100px] w-full items-center px-4 py-6 sm:px-6 lg:px-8"
-          style={{ backgroundColor: 'var(--ci-primary-deep)' }}
-        >
-          <div className="mx-auto w-full max-w-7xl">
-            <h1 className="text-[18px] font-bold text-white">{categoryName}</h1>
-          </div>
+    <>
+      <motion.div
+        initial={{ x: '100%', opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed left-0 right-0 z-[49] flex items-center px-4 sm:px-6 lg:px-8"
+        style={{ top: '96px', height: '56px', backgroundColor: 'var(--ci-primary-deep)' }}
+      >
+        <div className="mx-auto w-full max-w-7xl">
+          <h1 className="text-[18px] font-bold text-white">{categoryName}</h1>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
+      <div className="min-h-screen bg-gray-50 pt-[152px] pb-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
         <div className="flex flex-col lg:flex-row gap-8">
 
           {/* Sidebar — desktop only */}
@@ -157,7 +104,6 @@ export default function ProductListClient({
 
           {/* Main */}
           <main className="flex-1">
-            {/* Search */}
             <div className="relative mb-4 flex gap-2">
               <div className="relative flex-1">
                 <input
@@ -174,7 +120,6 @@ export default function ProductListClient({
                   </button>
                 </div>
               </div>
-              {/* Mobile filter button */}
               <button
                 onClick={() => setFilterOpen(!filterOpen)}
                 className={`lg:hidden flex items-center justify-center min-w-[3.5rem] aspect-square rounded-full border transition-colors shrink-0 ${
@@ -185,7 +130,6 @@ export default function ProductListClient({
               </button>
             </div>
 
-            {/* Mobile FilterCard */}
             {filterOpen && (
               <div className="lg:hidden mb-6">
                 <FilterCard
@@ -200,19 +144,16 @@ export default function ProductListClient({
               </div>
             )}
 
-            {/* Product Grid */}
             <div className="mt-6 grid grid-cols-2 gap-5 md:gap-6 lg:grid-cols-3 lg:gap-8">
-              {filteredSubCategories.map((sub) => {
-                const subName = isEn ? sub.name_en : sub.name_th;
-                return (
-                  <ProductCard
-                    key={sub.id}
-                    name="Product Name"
-                    subCategory={subName}
-                  />
-                );
-              })}
+              {filteredSubCategories.map((sub) => (
+                <ProductCard
+                  key={sub.id}
+                  name="Product Name"
+                  subCategory={isEn ? sub.name_en : sub.name_th}
+                />
+              ))}
             </div>
+
             {filteredSubCategories.length === 0 && (
               <div className="mt-6 rounded-[32px] border border-dashed border-[#15233E]/15 bg-white px-6 py-12 text-center text-[#2C3E5D]/70 shadow-sm">
                 <p className="text-base font-semibold">
@@ -228,6 +169,7 @@ export default function ProductListClient({
           </main>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

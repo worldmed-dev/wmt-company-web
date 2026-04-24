@@ -8,7 +8,9 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   const categories = await getProductCategories();
   return (
     <>
-      <Navbar categories={categories} />
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Navbar categories={categories} />
+      </div>
       {children}
       <Footer categories={categories} />
     </>

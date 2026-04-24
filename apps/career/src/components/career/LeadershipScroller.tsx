@@ -293,7 +293,7 @@ function LeadershipCard({
       <div className="absolute inset-0 bg-gradient-to-t from-[#112246] via-[#112246]/42 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-6">
         <div className="relative min-h-[4.75rem] md:min-h-[5.25rem]">
-          <p className="absolute inset-x-0 bottom-0 flex flex-col justify-end text-balance text-left text-base leading-tight font-bold uppercase tracking-[0.14em] text-white transition-all duration-300 md:text-lg group-hover:-translate-y-2 group-hover:opacity-0">
+          <p className="absolute inset-x-0 bottom-0 flex flex-col justify-end text-balance text-left text-base leading-tight font-bold uppercase text-white transition-all duration-300 md:text-lg group-hover:-translate-y-2 group-hover:opacity-0">
             <span className="block">{roleFirstLine}</span>
             {roleSecondLine ? <span className="block">{roleSecondLine}</span> : null}
           </p>
@@ -329,7 +329,8 @@ export default function LeadershipScroller({ items }: LeadershipScrollerProps) {
   const progressRef = useRef(0);
   const [activeRenderedIndex, setActiveRenderedIndex] = useState(items.length);
   const [previewRenderedIndex, setPreviewRenderedIndex] = useState<number | null>(null);
-  const [isAutoScrollPaused, setIsAutoScrollPaused] = useState(false);
+  const [isAutoScrollPaused, setIsAutoScrollPaused] = useState(true);
+  const isInViewRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [progress, setProgress] = useState(0);
   const tripledItems = [...items, ...items, ...items];
@@ -473,8 +474,23 @@ export default function LeadershipScroller({ items }: LeadershipScrollerProps) {
     resizeObserver.observe(middleSet);
     resizeObserver.observe(viewport);
 
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isInViewRef.current = entry.isIntersecting;
+        if (entry.isIntersecting) {
+          setIsAutoScrollPaused(false);
+        } else {
+          setIsAutoScrollPaused(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    intersectionObserver.observe(viewport);
+
     return () => {
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
       cancelSnapAnimation();
 
       if (scrollSettleTimeoutRef.current !== null) {
@@ -597,7 +613,7 @@ export default function LeadershipScroller({ items }: LeadershipScrollerProps) {
         onMouseLeave={() => {
           isHoveringRef.current = false;
 
-          if (!dragStateRef.current.dragging) {
+          if (!dragStateRef.current.dragging && isInViewRef.current) {
             setIsAutoScrollPaused(false);
           }
         }}
@@ -620,7 +636,7 @@ export default function LeadershipScroller({ items }: LeadershipScrollerProps) {
             resetProgress();
             setPreviewRenderedIndex(null);
 
-            if (!isHoveringRef.current && !dragStateRef.current.dragging) {
+            if (!isHoveringRef.current && !dragStateRef.current.dragging && isInViewRef.current) {
               setIsAutoScrollPaused(false);
             }
           }, 140);

@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { toSlug } from '@wmt/shared';
 
 type DepartmentCareerRow = {
   id?: unknown;
@@ -9,6 +10,7 @@ type DepartmentCareerRow = {
 export type DepartmentCareer = {
   id: string;
   name: string;
+  image_url: string | null;
 };
 
 function asText(value: unknown) {
@@ -35,6 +37,7 @@ function mapDepartmentRows(rows: DepartmentCareerRow[]) {
           asText(row.id) ??
           (typeof row.id === 'number' ? String(row.id) : `department-${index}-${name}`),
         name,
+        image_url: asText(row.image_url) ?? null,
       };
     })
     .filter((department): department is DepartmentCareer => department !== null);
@@ -52,4 +55,9 @@ export async function getDepartmentCareers(): Promise<DepartmentCareer[]> {
   }
 
   return mapDepartmentRows((data ?? []) as DepartmentCareerRow[]);
+}
+
+export async function getDepartmentBySlug(slug: string): Promise<DepartmentCareer | null> {
+  const departments = await getDepartmentCareers();
+  return departments.find((d) => toSlug(d.name) === slug) ?? null;
 }

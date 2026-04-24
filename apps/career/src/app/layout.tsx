@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import { connection } from 'next/server';
 import { SmoothScrollProvider } from '@wmt/ui';
 
@@ -16,6 +17,7 @@ export default async function RootLayout({
         <SmoothScrollProvider>
           <Navbar />
           {children}
+          <Footer />
         </SmoothScrollProvider>
       </body>
     </html>

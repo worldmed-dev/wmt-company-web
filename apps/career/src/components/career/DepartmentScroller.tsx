@@ -1,11 +1,15 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { toSlug } from '@wmt/shared';
 
 type DepartmentScrollerItem = {
   id: string;
   name: string;
   accent: string;
+  image_url?: string | null;
 };
 
 type DepartmentScrollerProps = {
@@ -54,16 +58,20 @@ function splitDepartmentLines(name: string) {
 function DepartmentCard({
   item,
   isDragging,
+  onCardClick,
 }: {
   item: DepartmentScrollerItem;
   isDragging: boolean;
+  onCardClick: (e: React.MouseEvent) => void;
 }) {
   const { firstLine, secondLine } = splitDepartmentLines(item.name);
 
   return (
-    <article
+    <Link
+      href={`/department/${toSlug(item.name)}`}
+      onClick={onCardClick}
       className={`group relative shrink-0 overflow-hidden rounded-[2rem] border border-black/5 bg-[#dfe7f5] transition-all duration-500 ${
-        isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        isDragging ? 'cursor-grabbing' : 'cursor-pointer'
       }`}
       style={{
         width: 'min(68vw, 18.75rem)',
@@ -75,104 +83,90 @@ function DepartmentCard({
         className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
         style={{ background: item.accent }}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.22),transparent_28%),linear-gradient(to_top,rgba(17,34,70,0.96),rgba(17,34,70,0.42)_58%,rgba(17,34,70,0.16))]" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span className="pointer-events-none select-none text-6xl font-bold tracking-[0.18em] text-white/16 md:text-7xl">
-          {getInitials(item.name)}
-        </span>
+      {item.image_url && (
+        <Image
+          src={item.image_url}
+          alt={item.name}
+          fill
+          className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#112246]/90 via-[#112246]/20 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 p-6 pt-16">
+        <p className="text-balance text-left text-base leading-tight font-bold uppercase text-white md:text-lg">
+          <span className="block">{firstLine}</span>
+          {secondLine ? <span className="block">{secondLine}</span> : null}
+        </p>
       </div>
-      <div className="absolute inset-x-0 bottom-0 p-6">
-        <div className="min-h-[4.75rem] md:min-h-[5.25rem]">
-          <p className="text-balance text-left text-base leading-tight font-bold uppercase text-[#FF8300] md:text-lg">
-            <span className="block">{firstLine}</span>
-            {secondLine ? <span className="block">{secondLine}</span> : null}
-          </p>
-        </div>
-      </div>
-    </article>
+    </Link>
   );
 }
 
 export default function DepartmentScroller({ items }: DepartmentScrollerProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const dragStateRef = useRef({
-    dragging: false,
-    pointerId: -1,
-    startX: 0,
-    scrollLeft: 0,
-  });
-  const [isDragging, setIsDragging] = useState(false);
+  const dragStateRef = useRef({ startX: 0, startScrollLeft: 0, didDrag: false });
 
-  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const viewport = viewportRef.current;
+    if (!viewport) return;
+    dragStateRef.current = { startX: e.clientX, startScrollLeft: viewport.scrollLeft, didDrag: false };
 
-    if (!viewport) {
-      return;
-    }
-
-    if (event.pointerType === 'mouse' && event.button !== 0) {
-      return;
-    }
-
-    dragStateRef.current = {
-      dragging: true,
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      scrollLeft: viewport.scrollLeft,
+    const handleMouseMove = (e: MouseEvent) => {
+      const distance = e.clientX - dragStateRef.current.startX;
+      if (Math.abs(distance) > 4) dragStateRef.current.didDrag = true;
+      viewport.scrollLeft = dragStateRef.current.startScrollLeft - distance;
     };
 
-    setIsDragging(true);
-    viewport.setPointerCapture(event.pointerId);
-  }
+    const handleMouseUp = () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
 
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const viewport = viewportRef.current;
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
 
-    if (!viewport || !dragStateRef.current.dragging) {
-      return;
-    }
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (dragStateRef.current.didDrag) e.preventDefault();
+  };
 
-    event.preventDefault();
+  const CARD_WIDTH = 300 + 20; // min(68vw, 18.75rem) + gap-5
 
-    const distance = event.clientX - dragStateRef.current.startX;
-    viewport.scrollLeft = dragStateRef.current.scrollLeft - distance;
-  }
-
-  function endDrag(pointerId?: number) {
-    const viewport = viewportRef.current;
-
-    if (!viewport || !dragStateRef.current.dragging) {
-      return;
-    }
-
-    dragStateRef.current.dragging = false;
-    setIsDragging(false);
-
-    if (typeof pointerId === 'number' && viewport.hasPointerCapture(pointerId)) {
-      viewport.releasePointerCapture(pointerId);
-    }
-  }
+  const scrollBy = (dir: 1 | -1) => {
+    viewportRef.current?.scrollBy({ left: dir * CARD_WIDTH, behavior: 'smooth' });
+  };
 
   return (
     <div className="mt-12">
       <div
         ref={viewportRef}
-        className="overflow-x-auto select-none touch-pan-y [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={(event) => endDrag(event.pointerId)}
-        onPointerCancel={(event) => endDrag(event.pointerId)}
+        className="overflow-x-auto touch-pan-y [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
+        onMouseDown={handleMouseDown}
       >
         <div className="flex w-max items-stretch gap-5 px-1">
           {items.map((item) => (
-            <DepartmentCard key={item.id} item={item} isDragging={isDragging} />
+            <DepartmentCard key={item.id} item={item} isDragging={false} onCardClick={handleCardClick} />
           ))}
         </div>
       </div>
-      <div className="mt-5 flex justify-start pl-1">
+      <div className="mt-5 flex items-center justify-between pl-1">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#112246]/46">
           Drag to explore
         </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => scrollBy(-1)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#112246]/20 text-[#112246] transition-colors hover:bg-[#112246]/10"
+          >
+            &#8592;
+          </button>
+          <button
+            onClick={() => scrollBy(1)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#112246]/20 text-[#112246] transition-colors hover:bg-[#112246]/10"
+          >
+            &#8594;
+          </button>
+        </div>
       </div>
     </div>
   );

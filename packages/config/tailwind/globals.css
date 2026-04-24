@@ -96,6 +96,8 @@ html.lenis body {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ci-primary: var(--ci-primary);
+  --color-ci-primary-deep: var(--ci-primary-deep);
   --font-sans: var(--font-montserrat), 'Google Sans Thai', sans-serif;
 }
 
@@ -111,6 +113,25 @@ body {
   color: var(--foreground);
   margin: 0;
   padding: 0;
+}
+
+.page-x {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (min-width: 768px) {
+  .page-x {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-x {
+    padding-left: 6rem;
+    padding-right: 6rem;
+  }
 }
 
 :lang(th) {

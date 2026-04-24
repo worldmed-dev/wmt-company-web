@@ -20,3 +20,7 @@
   --font-montserrat: 'Montserrat Local';
   --font-architects-daughter: 'Architects Daughter Local', cursive;
 }
+
+body {
+  font-family: 'Montserrat Local', var(--font-noto-sans-thai), sans-serif;
+}

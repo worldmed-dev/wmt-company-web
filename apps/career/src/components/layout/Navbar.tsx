@@ -30,9 +30,10 @@ export default function Navbar() {
   return (
     <>
       <nav
+        id="career-navbar"
         className="fixed left-0 right-0 top-0 z-50 transition-all duration-300"
         style={{
-          backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.8)' : 'transparent',
+          backgroundColor: 'rgba(255, 255, 255, 1)',
           backdropFilter: scrolled ? 'blur(24px)' : 'none',
         }}
       >
@@ -51,13 +52,23 @@ export default function Navbar() {
 
             <div className="hidden items-center gap-8 lg:flex">
               {careerNavItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="text-sm font-bold uppercase tracking-[0.15em] text-[#112246] transition-colors hover:text-[#112246]/70"
-                >
-                  {item.label}
-                </Link>
+                item.href.startsWith('/#') ? (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="text-sm font-bold uppercase tracking-[0.15em] text-[#112246] transition-colors hover:text-[#112246]/70"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="text-sm font-bold uppercase tracking-[0.15em] text-[#112246] transition-colors hover:text-[#112246]/70"
+                  >
+                    {item.label}
+                  </Link>
+                )
               ))}
             </div>
 
@@ -86,14 +97,25 @@ export default function Navbar() {
         >
           <div className="flex flex-col gap-1 px-6 py-6">
             {careerNavItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={closeMobileMenu}
-                className="border-b border-white/10 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white"
-              >
-                {item.label}
-              </Link>
+              item.href.startsWith('/#') ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={closeMobileMenu}
+                  className="border-b border-white/10 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={closeMobileMenu}
+                  className="border-b border-white/10 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white"
+                >
+                  {item.label}
+                </Link>
+              )
             ))}
             <div className="mt-6 flex items-center gap-4">
               <span className="text-sm font-bold text-white">EN</span>

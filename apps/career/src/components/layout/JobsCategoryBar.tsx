@@ -4,24 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 
 const NAVBAR_H = 112;
 
-const DEFAULT_navItems = [
-  { label: 'How We Do', href: '#how-we-do' },
-  { label: 'Role Opening', href: '#role-opening' },
-  { label: 'What We Look For', href: '#what-we-look-for' },
+const NAV_ITEMS = [
+  { label: 'All Jobs', href: '#all-jobs' },
+  { label: 'By Department', href: '#by-department' },
 ];
 
-type NavItem = { label: string; href: string };
-
-export default function DepartmentCategoryBar({
-  name,
-  navItems = DEFAULT_navItems,
-}: {
-  name: string;
-  navItems?: NavItem[];
-}) {
+export default function JobsCategoryBar() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [navbarHidden, setNavbarHidden] = useState(false);
-  const [activeSection, setActiveSection] = useState('how-we-do');
+  const [activeSection, setActiveSection] = useState('all-jobs');
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -48,7 +39,7 @@ export default function DepartmentCategoryBar({
   }, []);
 
   useEffect(() => {
-    const sectionIds = navItems.map((item) => item.href.slice(1));
+    const sectionIds = NAV_ITEMS.map((item) => item.href.slice(1));
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
@@ -86,9 +77,9 @@ export default function DepartmentCategoryBar({
         }}
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
-          <span className="text-[15px] font-bold text-white shrink-0">{name}</span>
+          <span className="text-[15px] font-bold text-white shrink-0">Open Positions</span>
           <nav className="flex items-center gap-2">
-            {navItems.map((item) => {
+            {NAV_ITEMS.map((item) => {
               const id = item.href.slice(1);
               const isActive = activeSection === id;
               return (

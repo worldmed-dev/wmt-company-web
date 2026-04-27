@@ -66,14 +66,14 @@ function MegaMenu({ menu, onClose }: { menu: Menu; onClose: () => void }) {
       style={{ animation: 'megaMenuIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
     >
       <div className="w-1/5 p-10 border-r border-black/10 flex flex-col justify-center shrink-0">
-        <h2 className="text-[#112246] text-4xl font-black italic tracking-tighter mb-2">{menu.left.title}</h2>
-        <p className="text-[#112246]/50 text-xs font-semibold leading-relaxed tracking-[0.15em] whitespace-pre-line">{menu.left.desc}</p>
+        <h2 className="text-[#112246] text-4xl font-black italic  mb-2">{menu.left.title}</h2>
+        <p className="text-[#112246]/50 text-xs font-semibold leading-relaxed  whitespace-pre-line">{menu.left.desc}</p>
       </div>
       <div className="flex-1 p-8 flex flex-col gap-y-1">
         {menu.items.map((item) => (
           <Link key={item.title} href={(item.href ?? '#') as never} onMouseEnter={() => setActiveItem(item)} onClick={onClose}
             className={`flex items-center justify-between py-2.5 px-4 rounded-xl transition-colors ${activeItem.title === item.title ? 'bg-[#112246]/10' : 'hover:bg-[#112246]/10'}`}>
-            <span className={`text-[13px] font-semibold tracking-[0.15em] uppercase transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
+            <span className={`text-[16px] font-semibold  uppercase transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
               {item.title}
             </span>
             {item.sub && <ChevronRightIcon className={`w-4 h-4 transition-colors ${activeItem.title === item.title ? 'text-[#112246]' : 'text-[#112246]/30'}`} />}
@@ -84,12 +84,12 @@ function MegaMenu({ menu, onClose }: { menu: Menu; onClose: () => void }) {
         {activeItem.sub ? (
           activeItem.sub.map((sub) => (
             <Link key={sub.title} href={(sub.href ?? '#') as never} onClick={onClose} className="group/sub flex items-center justify-between py-2.5 px-4 rounded-xl hover:bg-[#112246]/10 transition-colors">
-              <span className="text-[#112246]/60 text-[13px] font-semibold tracking-[0.15em] uppercase group-hover/sub:text-[#112246] transition-colors">{sub.title}</span>
+              <span className="text-[#112246]/60 text-[16px] font-semibold  uppercase group-hover/sub:text-[#112246] transition-colors">{sub.title}</span>
               <ChevronRightIcon className="w-4 h-4 text-[#112246]/30 group-hover/sub:text-[#112246] transition-colors" />
             </Link>
           ))
         ) : (
-          <p className="text-[#112246]/20 text-xs tracking-[0.15em] px-4 pt-2">—</p>
+          <p className="text-[#112246]/20 text-xs  px-4 pt-2">—</p>
         )}
       </div>
     </div>
@@ -149,10 +149,10 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-12">
               {menus.map((menu) => (
                 <button key={menu.key} onMouseEnter={() => setOpenMenu(menu.key)}
-                  className="relative flex items-center text-sm font-bold text-[#112246] tracking-[0.15em] uppercase">
+                  className="relative flex items-center text-[18px] font-bold text-[#112246]  uppercase">
                   {menu.label}
                   <ChevronDownIcon className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-4 h-4 transition-all duration-200 ${openMenu === menu.key ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`} />
                 </button>
@@ -161,7 +161,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                 href={careerSiteUrl}
                 onClick={() => setOpenMenu(null)}
                 onMouseEnter={() => setOpenMenu(null)}
-                className="text-sm font-bold text-[#112246]/70 hover:text-[#112246] uppercase tracking-[0.15em] transition-colors"
+                className="text-[18px] font-bold text-[#112246]/70 hover:text-[#112246] uppercase transition-colors"
               >
                 {t('nav.career')}
               </a>
@@ -178,15 +178,15 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                   <ChevronDownIcon className="w-3.5 h-3.5 transition-transform group-hover:rotate-180" />
                 </button>
                 <div className="absolute top-full right-0 mt-2 w-36 backdrop-blur-md bg-white/80 border border-[#112246]/20 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <button onClick={() => switchLocale('en')} className={`w-full px-4 py-2.5 text-left text-sm font-bold tracking-wide transition-colors hover:bg-[#112246]/10 ${locale === 'en' ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
+                  <button onClick={() => switchLocale('en')} className={`w-full px-4 py-2.5 text-left text-sm font-bold transition-colors hover:bg-[#112246]/10 ${locale === 'en' ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
                     {t('nav.lang_en')}
                   </button>
-                  <button onClick={() => switchLocale('th')} className={`w-full px-4 py-2.5 text-left text-sm font-bold tracking-wide transition-colors hover:bg-[#112246]/10 ${locale === 'th' ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
+                  <button onClick={() => switchLocale('th')} className={`w-full px-4 py-2.5 text-left text-sm font-bold transition-colors hover:bg-[#112246]/10 ${locale === 'th' ? 'text-[#112246]' : 'text-[#112246]/60'}`}>
                     {t('nav.lang_th')}
                   </button>
                 </div>
               </div>
-              <a href="#" className="border border-[#112246]/20 bg-[#112246]/10 backdrop-blur-md text-[#112246] px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-[#112246]/20 transition-all tracking-wider">
+              <a href="#" className="border border-[#112246]/20 bg-[#112246]/10 backdrop-blur-md text-[#112246] px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-[#112246]/20 transition-all ">
                 {t('nav.contact')}
               </a>
             </div>
@@ -215,7 +215,7 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
             {menus.map(({ key, label, items }) => (
               <div key={key} className="border-b border-white/10">
                 <button onClick={() => setMobileExpanded(mobileExpanded === key ? null : key)}
-                  className="w-full flex items-center justify-between py-3 text-sm font-bold text-white tracking-[0.15em] uppercase">
+                  className="w-full flex items-center justify-between py-3 text-sm font-bold text-white  uppercase">
                   {label}
                   <ChevronDownIcon className={`w-4 h-4 transition-transform ${mobileExpanded === key ? 'rotate-180' : ''}`} />
                 </button>
@@ -223,9 +223,9 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                   <div className="pb-3 flex flex-col gap-1">
                     {items.map((item) => (
                       <div key={item.title}>
-                        <Link href={(item.href ?? '#') as never} className="py-2 px-3 text-xs font-bold text-white/70 hover:text-white tracking-[0.15em] uppercase transition-colors flex">{item.title}</Link>
+                        <Link href={(item.href ?? '#') as never} className="py-2 px-3 text-xs font-bold text-white/70 hover:text-white  uppercase transition-colors flex">{item.title}</Link>
                         {item.sub?.map((sub) => (
-                          <Link key={sub.title} href={(sub.href ?? '#') as never} className="py-1.5 px-6 text-[11px] font-bold text-white/40 hover:text-white tracking-[0.15em] uppercase transition-colors flex">— {sub.title}</Link>
+                          <Link key={sub.title} href={(sub.href ?? '#') as never} className="py-1.5 px-6 text-[11px] font-bold text-white/40 hover:text-white  uppercase transition-colors flex">— {sub.title}</Link>
                         ))}
                       </div>
                     ))}
@@ -240,14 +240,14 @@ export default function Navbar({ categories }: { categories: CategoryWithSubs[] 
                 setMobileExpanded(null);
                 setOpenMenu(null);
               }}
-              className="py-3 text-sm font-bold text-white/70 tracking-[0.15em] uppercase border-b border-white/10"
+              className="py-3 text-sm font-bold text-white/70  uppercase border-b border-white/10"
             >
               {t('nav.career')}
             </a>
             <div className="mt-6 flex items-center gap-4">
               <button onClick={() => switchLocale('en')} className={`text-sm font-bold ${locale === 'en' ? 'text-white' : 'text-white/50'}`}>EN</button>
               <button onClick={() => switchLocale('th')} className={`text-sm font-bold ${locale === 'th' ? 'text-white' : 'text-white/50'}`}>TH</button>
-              <a href="#" className="border border-white/20 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-white/20 transition-all tracking-wider">
+              <a href="#" className="border border-white/20 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-xs font-black uppercase hover:bg-white/20 transition-all ">
                 {t('nav.contact')}
               </a>
             </div>

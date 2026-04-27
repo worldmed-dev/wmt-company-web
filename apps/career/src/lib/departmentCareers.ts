@@ -16,6 +16,8 @@ export type DepartmentCareer = {
   head_image: string | null;
   testimonial_en: string | null;
   testimonial_th: string | null;
+  hwd_en: string | null;
+  hwd_th: string | null;
 };
 
 function asText(value: unknown) {
@@ -48,6 +50,8 @@ function mapDepartmentRows(rows: DepartmentCareerRow[]) {
         head_image: asText(row.head_image) ?? null,
         testimonial_en: asText(row.testimonial_en) ?? null,
         testimonial_th: asText(row.testimonial_th) ?? null,
+        hwd_en: asText(row.hwd_en) ?? null,
+        hwd_th: asText(row.hwd_th) ?? null,
       };
     })
     .filter((department): department is DepartmentCareer => department !== null);

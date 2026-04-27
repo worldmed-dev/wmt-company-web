@@ -29,6 +29,12 @@ export default async function DepartmentPage({
     ?? department.testimonial_th
     ?? 'Working here changed how I think about impact. Every day I come in knowing the work we do reaches real patients.';
 
+  const hwd =
+    (isTh ? department.hwd_th : department.hwd_en)
+    ?? department.hwd_en
+    ?? department.hwd_th
+    ?? 'We move with clarity and purpose. Every project is an opportunity to raise the bar — for our team, our partners, and the patients we ultimately serve.';
+
   return (
     <div className="min-h-screen bg-white">
       <DepartmentCategoryBar name={department.name} />
@@ -84,11 +90,9 @@ export default async function DepartmentPage({
             {/* Left — text */}
             <div className="flex-1">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#112246]/50">How We Do</p>
-              <h2 className="mt-4 text-3xl font-bold text-[#112246] md:text-4xl">The way we work</h2>
+              <h2 className="mt-4 text-3xl font-bold text-[#112246] md:text-4xl">The Pulse Behind the Process</h2>
               <p className="mt-5 max-w-md text-base leading-8 text-[#112246]/60">
-                ทีม People Operations ของเราไม่ได้แค่แก้ปัญหา แต่เราเปลี่ยนทุกความท้าทายให้เป็นโอกาสในการพัฒนาคน
-
-เราใช้ข้อมูลมาวางแผนเพื่อ 'ดันคนเก่ง' ให้เติบโต และสร้างวัฒนธรรมองค์กรที่แข็งแกร่งผ่านกิจกรรมที่สร้างสรรค์ เราพร้อมดูแลครอบคลุมทุกมิติ เพื่อสร้างสถานที่ทำงานที่สนับสนุนให้ทุกคนก้าวขึ้นเป็นผู้นำ และเติบโตไปพร้อมกับความเป็นเลิศขององค์กร
+                {hwd}
               </p>
             </div>
 
@@ -199,7 +203,10 @@ export default async function DepartmentPage({
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/50">What We Look For</p>
           <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">Who fits here</h2>
           <p className="mt-5 max-w-2xl text-base leading-8 text-white/60 md:text-lg">
-            We look for people who are curious, accountable, and energised by meaningful challenges. If that sounds like you, we'd love to connect.
+            Who fits here HR
+สำหรับการเฟ้นหาคนเข้าทีม HR ของ WMT นั้น เราไม่ได้มองหาแค่คนที่ "ทำงานตามระเบียบ" แต่เรามองหา "Culture Builder" ที่มีความเชื่อในแบบเดียวกัน เพื่อที่จะสามารถส่งต่อ DNA ทั้ง 3 ตัว (W-M-T) ไปยังพนักงานคนอื่นๆ ได้อย่างเป็นธรรมชาติ
+ถ้าคุณเป็นคนที่อยากทำ HR ในแบบที่เห็นผลลัพธ์การเติบโตของคนจริงๆ และชอบทำงานในสภาพแวดล้อมที่ Flexible แต่ High-Performance... คุณคือคนที่ WMT กำลังมองหา
+ 
           </p>
         </div>
       </section>

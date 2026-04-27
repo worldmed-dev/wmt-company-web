@@ -11,7 +11,7 @@ const mainSiteUrl = getMainSiteUrl();
 const careerNavItems = [
   { label: 'Our Team', href: '/#our-team' },
   { label: 'Culture', href: '/culture' },
-  { label: 'Job', href: '/#job' },
+  { label: 'Jobs', href: '/jobs' },
   { label: 'Internship', href: '/#internship' },
 ] as const;
 
@@ -38,7 +38,7 @@ export default function Navbar() {
         }}
       >
         <div className="border-b border-white/10">
-          <div className="mx-auto flex h-28 max-w-[1400px] items-center justify-between px-6 py-4">
+          <div className="mx-auto flex h-28 max-w-[1400px] items-center justify-between page-x py-4">
             <Link href={joinSiteUrl(mainSiteUrl, '/en')} className="flex cursor-pointer items-center">
               <Image
                 src="/wmt-logo.webp"

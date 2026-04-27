@@ -53,7 +53,7 @@ export function PageTransition({ children, className, pathname }: PageTransition
         animate="center"
         exit="exit"
         transition={TRANSITION_IN}
-        className={`${className ?? ''} will-change-transform will-change-opacity overflow-x-hidden`}
+        className={`${className ?? ''} will-change-transform will-change-opacity`}
         style={{ ['--exit-transition' as string]: JSON.stringify(TRANSITION_OUT) }}
       >
         {children}

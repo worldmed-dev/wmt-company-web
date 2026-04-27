@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { headers } from 'next/headers';
 import { getDepartmentBySlug, getDepartmentCareers } from '@/lib/departmentCareers';
 import { toSlug } from '@wmt/shared';
 import DepartmentCategoryBar from '@/components/layout/DepartmentCategoryBar';
@@ -15,9 +16,18 @@ export default async function DepartmentPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const headersList = await headers();
+  const acceptLang = headersList.get('accept-language') ?? '';
+  const isTh = acceptLang.toLowerCase().startsWith('th');
   const department = await getDepartmentBySlug(slug);
 
   if (!department) notFound();
+
+  const testimonial =
+    (isTh ? department.testimonial_th : department.testimonial_en)
+    ?? department.testimonial_en
+    ?? department.testimonial_th
+    ?? 'Working here changed how I think about impact. Every day I come in knowing the work we do reaches real patients.';
 
   return (
     <div className="min-h-screen bg-white">
@@ -84,28 +94,54 @@ export default async function DepartmentPage({
 
             {/* Right — stacked cards */}
             <div className="w-full lg:w-[45%] shrink-0">
-              <div className="relative w-full" style={{ aspectRatio: '1/1' }}>
-                {/* Image card — top-right */}
-                <div className="absolute top-0 right-0 w-[75%] aspect-[4/3] rounded-[2rem] overflow-hidden">
-                  {department.image_url ? (
-                    <Image src={department.image_url} alt={department.name} fill className="object-cover" />
+              {/* Mobile: stacked vertically full width */}
+              <div className="flex flex-col lg:hidden">
+                <div className="relative w-full aspect-[7/6] overflow-hidden">
+                  {department.head_image ? (
+                    <Image src={department.head_image} alt={department.head_name ?? department.name} fill className="object-cover" />
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-[#112246] to-[#2f5aa6]" />
                   )}
                 </div>
-
-                {/* Quote + name group — bottom-left */}
-                <div className="absolute flex flex-col" style={{ bottom: '8%', left: '-8%', width: '75%' }}>
-                  <div className="aspect-[4/3] rounded-[2rem] bg-[#112246] p-6 flex flex-col">
-                    <p className="text-8xl font-bold text-white/20 leading-none">&ldquo;</p>
-                    <p className="mt-2 text-sm font-medium leading-7 text-white">
-                      Working here changed how I think about impact. Every day I come in knowing the work we do reaches real patients.
+                <figure className="relative w-full bg-[#112246]">
+                  <blockquote className="relative flex items-center justify-center p-8">
+                    <span className="absolute -top-7 left-5 text-8xl font-bold text-[#ff8300] leading-none select-none">&ldquo;</span>
+                    <span className="absolute -bottom-17 right-5 text-8xl font-bold text-[#ff8300] leading-none select-none">&rdquo;</span>
+                    <p className="relative z-10 text-sm font-medium leading-7 text-white text-center">
+                      {testimonial}
                     </p>
-                    <p className="text-8xl font-bold text-white/20 leading-none text-right">&rdquo;</p>
+                  </blockquote>
+                </figure>
+                <div className="mt-3 px-1">
+                  <p className="text-base font-bold text-[#112246]">{department.head_name ?? 'Ammarat C.'}</p>
+                  <p className="text-sm text-[#112246]/50">{department.role_name ?? department.name}</p>
+                </div>
+              </div>
+
+              {/* Desktop: stacked/overlapping */}
+              <div className="relative w-full hidden lg:block overflow-visible" style={{ aspectRatio: '1/1' }}>
+                <div className="absolute top-0 right-0 w-[60%] aspect-[7/6] rounded-[2rem] overflow-hidden">
+                  {department.head_image ? (
+                    <Image src={department.head_image} alt={department.head_name ?? department.name} fill className="object-cover" />
+                  ) : (
+                    <div className="h-full w-full bg-gradient-to-br from-[#112246] to-[#2f5aa6]" />
+                  )}
+                </div>
+                <div className="absolute flex flex-col" style={{ bottom: '20%', left: '2%', width: '55%' }}>
+                  <div className="relative">
+                    <figure className="relative aspect-[7/6] rounded-[2rem] bg-[#112246]">
+                      <blockquote className="relative h-full flex items-center justify-center p-8 md:p-10 overflow-visible">
+                        <span className="absolute -top-8 -left-3 text-8xl md:text-9xl font-bold text-[#ff8300] leading-none select-none pointer-events-none" aria-hidden="true">&ldquo;</span>
+                        <p className="text-sm md:text-base font-medium leading-7 text-white text-center">
+                          {testimonial}
+                        </p>
+                        <span className="absolute -bottom-20 -right-4 text-8xl md:text-9xl font-bold text-[#ff8300] leading-none select-none pointer-events-none" aria-hidden="true">&rdquo;</span>
+                      </blockquote>
+                    </figure>
                   </div>
                   <div className="mt-3 px-1">
-                    <p className="text-xs font-bold text-[#112246]">Ammarat C.</p>
-                    <p className="text-[11px] text-[#112246]/50">People Operations · 3 years</p>
+                    <p className="text-base font-bold text-[#112246]">{department.head_name ?? 'Ammarat C.'}</p>
+                    <p className="text-sm text-[#112246]/50">{department.role_name ?? department.name}</p>
                   </div>
                 </div>
               </div>

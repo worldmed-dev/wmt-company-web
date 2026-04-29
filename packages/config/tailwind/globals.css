@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@source "../../../apps/main/src";
+@source "../../../apps/career/src";
+@source "../../ui/src";
+@source "../../shared/src";
+
 @font-face {
   font-family: 'Google Sans Thai';
   src: url('/fonts/GoogleSans-VariableFont_GRAD,opsz,wght.ttf') format('truetype');

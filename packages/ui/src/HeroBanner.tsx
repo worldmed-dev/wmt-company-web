@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 type HeroBannerProps = {
   backgroundImageUrl: string;
   backgroundAlt: string;
@@ -24,14 +22,10 @@ export function HeroBanner({
       className={["bg-[#f4f7fb] px-4 pb-14 pt-32 md:px-10 md:pb-16 md:pt-36 lg:px-12", className].filter(Boolean).join(" ")}
     >
       <div className="relative mx-auto min-h-[30rem] w-full max-w-[1180px] overflow-hidden rounded-[2.5rem] border border-[#122246]/10 bg-[#122246] shadow-[0_32px_90px_rgba(18,34,70,0.2)] md:min-h-[38rem]">
-        <Image
+        <img
           src={backgroundImageUrl}
           alt={backgroundAlt}
-          fill
-          preload
-          quality={80}
-          sizes="(max-width: 768px) calc(100vw - 3rem), (max-width: 1280px) calc(100vw - 6rem), 1280px"
-          className="object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#122246] via-[#122246]/30 to-transparent" />
 

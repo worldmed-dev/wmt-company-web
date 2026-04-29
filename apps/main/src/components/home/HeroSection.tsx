@@ -15,14 +15,14 @@ export default function HeroSection() {
   const padding = useTransform(scrollYProgress, [0, 0.4], ['2rem', '0rem']);
 
   return (
-    <section ref={ref} className="relative w-full h-screen bg-white">
+    <section ref={ref} className="relative w-full h-screen bg-white ">
       <motion.div
         className="relative w-full h-full overflow-hidden"
         style={{ borderRadius, padding }}
       >
         <div className="relative w-full h-full overflow-hidden" style={{ borderRadius: 'inherit' }}>
           <Image
-            src="https://ylxyojvodlhajgvuorll.supabase.co/storage/v1/object/public/Image/cover_image/cover_test.jpg"
+            src="https://ylxyojvodlhajgvuorll.supabase.co/storage/v1/object/public/Image/cover_image/cover-wmt.png"
             alt="Medical professionals"
             fill
             priority

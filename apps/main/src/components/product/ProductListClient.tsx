@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toSlug, type CategoryWithSubs, type SubCategory } from '@wmt/shared';
 import { FunnelIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
+import { SiteCategoryBar } from '@wmt/ui';
 import FilterCard from './FilterCard';
 import ProductCard from './ProductCard';
 
@@ -30,31 +30,6 @@ export default function ProductListClient({ currentCategory, initialSubSlugs = [
   const categoryName = currentCategory
     ? (isEn ? currentCategory.name_en : currentCategory.name_th)
     : '';
-
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const [navbarHidden, setNavbarHidden] = useState(false);
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    const navbarEl = document.querySelector<HTMLElement>('#navbar-wrapper');
-    if (!sentinel || !navbarEl) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const hidden = !entry.isIntersecting;
-        setNavbarHidden(hidden);
-        navbarEl.style.transform = hidden ? 'translateY(-100%)' : 'translateY(0)';
-        navbarEl.style.transition = 'transform 0.4s cubic-bezier(0, 0, 0.2, 1)';
-      },
-      { threshold: 0, rootMargin: '0px' }
-    );
-    observer.observe(sentinel);
-    return () => {
-      observer.disconnect();
-      navbarEl.style.transform = '';
-      navbarEl.style.transition = '';
-    };
-  }, []);
 
   const subCategories: SubCategory[] = currentCategory?.sub_categories ?? [];
   const initialSubSlugsKey = initialSubSlugs.join('|');
@@ -100,25 +75,11 @@ export default function ProductListClient({ currentCategory, initialSubSlugs = [
 
   return (
     <>
-      {/* Sentinel — sits at top of page content, below navbar */}
-      <div ref={sentinelRef} className="h-px" style={{ marginTop: '96px' }} />
-
-      <motion.div
-        initial={{ x: '100%', opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="sticky z-[49] flex items-center px-4 sm:px-6 lg:px-8"
-        style={{
-          top: navbarHidden ? '0px' : '96px',
-          height: '56px',
-          backgroundColor: 'var(--ci-primary-deep)',
-          transition: 'top 0.4s cubic-bezier(0, 0, 0.2, 1)',
-        }}
-      >
-        <div className="mx-auto w-full max-w-7xl">
-          <h1 className="text-[18px] font-bold text-white">{categoryName}</h1>
-        </div>
-      </motion.div>
+      <SiteCategoryBar
+        name={categoryName}
+        navbarId="navbar-wrapper"
+        navbarHeight={80}
+      />
 
       <div className="min-h-screen bg-gray-50 pb-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">

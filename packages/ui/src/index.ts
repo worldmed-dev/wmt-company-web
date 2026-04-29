@@ -7,3 +7,5 @@ export * from "./BrandLogoCarousel";
 export * from "./SiteFooter";
 export * from "./SmoothScrollProvider";
 export * from "./PageTransition";
+export * from "./SiteNavbar";
+export * from "./SiteCategoryBar";

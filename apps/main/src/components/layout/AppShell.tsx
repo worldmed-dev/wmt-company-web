@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCategoryBar } from './CategoryBarContext';
 
-const NAVBAR_H = 96;
+const NAVBAR_H = 112;
 const CATEGORY_BAR_H = 56;
 
 export function AppShell({ navbar, children }: { navbar: React.ReactNode; children: React.ReactNode }) {

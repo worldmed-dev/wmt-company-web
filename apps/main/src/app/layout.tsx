@@ -1,5 +1,5 @@
 import './globals.css';
-import { Noto_Sans_Thai } from 'next/font/google';
+import { Noto_Sans_Thai, Anton } from 'next/font/google';
 import { SmoothScrollProvider } from '@wmt/ui';
 
 const notoSansThai = Noto_Sans_Thai({
@@ -9,10 +9,17 @@ const notoSansThai = Noto_Sans_Thai({
   display: 'swap',
 });
 
+const anton = Anton({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-anton',
+  display: 'swap',
+});
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html className="h-full antialiased" suppressHydrationWarning>
-      <body className={`min-h-full flex flex-col font-sans ${notoSansThai.variable}`} suppressHydrationWarning>
+      <body className={`min-h-full flex flex-col font-sans ${notoSansThai.variable} ${anton.variable}`} suppressHydrationWarning>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

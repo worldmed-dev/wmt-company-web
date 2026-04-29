@@ -22,9 +22,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className={`min-h-full flex flex-col font-sans ${notoSansThai.variable}`}>
+        <Navbar />
         <SmoothScrollProvider>
-          <Navbar />
-          {children}
+          <div className="pt-20">
+            {children}
+          </div>
           <Footer />
         </SmoothScrollProvider>
       </body>

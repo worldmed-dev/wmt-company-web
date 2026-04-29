@@ -27,6 +27,7 @@ body {
 
 @theme inline {
   --font-sans: 'Montserrat Local', var(--font-noto-sans-thai), sans-serif;
+  --font-anton: var(--font-anton), sans-serif;
 }
 
 @font-face {
